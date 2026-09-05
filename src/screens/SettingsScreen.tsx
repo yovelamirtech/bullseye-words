@@ -7,10 +7,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import type { Settings } from '../state/settings';
 import ReportModal from '../components/ReportModal';
 import { tapHaptic, toggleHaptic } from '../utils/haptics';
 import { playClickSound } from '../utils/sound';
+import { FONTS } from '../utils/fonts';
+import { colors } from '../theme/colors';
+import { radii } from '../theme/radii';
 
 interface SettingsScreenProps {
   settings: Settings;
@@ -41,7 +45,7 @@ function Toggle({ value, onValueChange }: ToggleProps) {
 
   const trackBackground = anim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#ddc9b4', '#c1541c'],
+    outputRange: [colors.border, colors.accent],
   });
   const translateX = anim.interpolate({
     inputRange: [0, 1],
@@ -105,7 +109,7 @@ export default function SettingsScreen({
             }}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
           >
-            <Text style={styles.closeButton}>✕</Text>
+            <Ionicons name="close" size={18} color={colors.textMuted} />
           </Pressable>
           <Text style={styles.title}>הגדרות</Text>
         </View>
@@ -143,7 +147,7 @@ export default function SettingsScreen({
             }}
           >
             <Text style={styles.rowLabel}>דיווח על באג</Text>
-            <Text style={styles.chevron}>‹</Text>
+            <Ionicons name="chevron-back" size={18} color={colors.textFaint} />
           </Pressable>
         </View>
       </View>
@@ -182,8 +186,8 @@ const styles = StyleSheet.create({
   dialog: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: '#fdf3e7',
-    borderRadius: 20,
+    backgroundColor: colors.background,
+    borderRadius: radii.xl,
     paddingVertical: 16,
     paddingBottom: 20,
   },
@@ -195,30 +199,26 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
+    fontFamily: FONTS.bold,
     fontSize: 20,
-    fontWeight: '800',
-    color: '#3b2a1e',
-  },
-  closeButton: {
-    fontSize: 18,
-    color: '#8a7360',
+    color: colors.text,
   },
   sectionTitle: {
+    fontFamily: FONTS.bold,
     fontSize: 14,
-    fontWeight: '700',
-    color: '#8a7360',
+    color: colors.textMuted,
     textAlign: 'right',
     marginTop: 16,
     marginBottom: 8,
     paddingHorizontal: 20,
   },
   card: {
-    backgroundColor: '#fffaf3',
-    borderRadius: 14,
+    backgroundColor: colors.surface,
+    borderRadius: radii.md,
     marginHorizontal: 20,
     paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: '#e8c199',
+    borderColor: colors.accentBorder,
   },
   row: {
     flexDirection: 'row-reverse',
@@ -227,12 +227,9 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   rowLabel: {
+    fontFamily: FONTS.regular,
     fontSize: 16,
-    color: '#3b2a1e',
-  },
-  chevron: {
-    fontSize: 18,
-    color: '#a08a72',
+    color: colors.text,
   },
   toggleTrack: {
     width: 50,

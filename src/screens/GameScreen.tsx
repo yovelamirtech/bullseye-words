@@ -10,13 +10,16 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { scoreGuess, isWinningGuess, type GuessResult } from '../logic/game';
 import { isValidWord, pickRoundTarget } from '../data/words';
 import GuessRow from '../components/GuessRow';
 import LetterBoxInput from '../components/LetterBoxInput';
-import GearIcon from '../components/GearIcon';
 import ReportModal from '../components/ReportModal';
 import { errorHaptic, selectionHaptic, successHaptic, tapHaptic } from '../utils/haptics';
+import { FONTS } from '../utils/fonts';
+import { colors } from '../theme/colors';
+import { radii } from '../theme/radii';
 import {
   playClickSound,
   playCorrectSound,
@@ -123,7 +126,7 @@ export default function GameScreen({
         }}
         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
       >
-        <GearIcon size={20} color="#c1541c" />
+        <Ionicons name="settings-outline" size={20} color={colors.accent} />
       </Pressable>
       <Pressable
         style={styles.reportButton}
@@ -131,7 +134,7 @@ export default function GameScreen({
         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
         accessibilityLabel="דיווח על מילה שגויה"
       >
-        <Text style={styles.reportButtonText}>🚩</Text>
+        <Ionicons name="flag-outline" size={18} color={colors.accent} />
       </Pressable>
       <KeyboardAvoidingView
         style={styles.flex}
@@ -261,7 +264,7 @@ export default function GameScreen({
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#fdf3e7',
+    backgroundColor: colors.background,
   },
   flex: {
     flex: 1,
@@ -272,10 +275,10 @@ const styles = StyleSheet.create({
     left: 20,
     width: 40,
     height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f7e3d0',
+    borderRadius: radii.xl,
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: '#e8c199',
+    borderColor: colors.accentBorder,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1,
@@ -286,20 +289,18 @@ const styles = StyleSheet.create({
     left: 68,
     width: 40,
     height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f7e3d0',
+    borderRadius: radii.xl,
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: '#e8c199',
+    borderColor: colors.accentBorder,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1,
   },
-  reportButtonText: {
-    fontSize: 16,
-  },
   title: {
+    fontFamily: FONTS.display,
     fontSize: 28,
-    fontWeight: '800',
+    color: colors.text,
     textAlign: 'center',
     marginTop: 12,
   },
@@ -311,34 +312,37 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   subtitle: {
+    fontFamily: FONTS.regular,
     fontSize: 16,
     textAlign: 'center',
-    color: '#8a7360',
+    color: colors.textMuted,
   },
   changeLink: {
+    fontFamily: FONTS.regular,
     fontSize: 14,
-    color: '#c1541c',
+    color: colors.accent,
     textDecorationLine: 'underline',
   },
   clue: {
+    fontFamily: FONTS.regular,
     fontSize: 15,
     textAlign: 'center',
-    color: '#8a7360',
+    color: colors.textMuted,
     marginBottom: 8,
     paddingHorizontal: 24,
   },
   hintButton: {
     alignSelf: 'center',
     borderWidth: 1,
-    borderColor: '#c1541c',
-    borderRadius: 16,
+    borderColor: colors.accent,
+    borderRadius: radii.lg,
     paddingHorizontal: 16,
     paddingVertical: 6,
     marginBottom: 8,
   },
   hintButtonText: {
-    color: '#c1541c',
-    fontWeight: '600',
+    fontFamily: FONTS.medium,
+    color: colors.accent,
     fontSize: 14,
   },
   inputArea: {
@@ -347,18 +351,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   button: {
-    backgroundColor: '#c1541c',
-    borderRadius: 10,
+    backgroundColor: colors.accent,
+    borderRadius: radii.sm,
     paddingHorizontal: 24,
     paddingVertical: 10,
     justifyContent: 'center',
   },
   buttonDisabled: {
-    backgroundColor: '#c9b6a0',
+    backgroundColor: colors.cardDisabled,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: '700',
+    fontFamily: FONTS.bold,
+    color: colors.textOnAccent,
     fontSize: 16,
   },
   winBox: {
@@ -367,15 +371,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   winText: {
+    fontFamily: FONTS.bold,
     fontSize: 18,
-    fontWeight: '700',
-    color: '#4f7942',
+    color: colors.success,
     marginBottom: 8,
     textAlign: 'center',
   },
   hint: {
+    fontFamily: FONTS.regular,
     textAlign: 'center',
-    color: '#a08a72',
+    color: colors.textFaint,
     marginTop: 24,
   },
   errorBox: {
@@ -383,13 +388,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   error: {
+    fontFamily: FONTS.regular,
     textAlign: 'center',
-    color: '#c0392b',
+    color: colors.error,
   },
   errorReportLink: {
+    fontFamily: FONTS.regular,
     marginTop: 4,
     fontSize: 13,
-    color: '#c1541c',
+    color: colors.accent,
     textDecorationLine: 'underline',
   },
 });

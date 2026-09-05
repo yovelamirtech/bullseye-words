@@ -11,6 +11,9 @@ import {
 import AnimatedModal from './AnimatedModal';
 import { successHaptic, tapHaptic } from '../utils/haptics';
 import { playClickSound, playCorrectSound } from '../utils/sound';
+import { FONTS } from '../utils/fonts';
+import { colors } from '../theme/colors';
+import { radii } from '../theme/radii';
 
 export interface ReportField {
   key: string;
@@ -111,7 +114,7 @@ export default function ReportModal({
                         setValues((prev) => ({ ...prev, [field.key]: text }))
                       }
                       placeholder={field.placeholder}
-                      placeholderTextColor="#c2ab90"
+                      placeholderTextColor={colors.placeholder}
                       multiline={field.multiline}
                     />
                   </View>
@@ -154,44 +157,46 @@ const styles = StyleSheet.create({
     maxWidth: 360,
   },
   card: {
-    backgroundColor: '#fdf3e7',
-    borderRadius: 20,
+    backgroundColor: colors.background,
+    borderRadius: radii.xl,
     padding: 20,
   },
   title: {
+    fontFamily: FONTS.bold,
     fontSize: 20,
-    fontWeight: '800',
-    color: '#3b2a1e',
+    color: colors.text,
     textAlign: 'center',
     marginBottom: 8,
     writingDirection: 'rtl',
   },
   message: {
+    fontFamily: FONTS.regular,
     fontSize: 14,
-    color: '#8a7360',
+    color: colors.textMuted,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 4,
     writingDirection: 'rtl',
   },
   fieldLabel: {
+    fontFamily: FONTS.bold,
     fontSize: 13,
-    fontWeight: '700',
-    color: '#8a7360',
+    color: colors.textMuted,
     textAlign: 'right',
     writingDirection: 'rtl',
     marginTop: 14,
     marginBottom: 6,
   },
   input: {
-    backgroundColor: '#fffaf3',
-    borderRadius: 12,
+    fontFamily: FONTS.regular,
+    backgroundColor: colors.surface,
+    borderRadius: radii.md,
     borderWidth: 1,
-    borderColor: '#e8c199',
+    borderColor: colors.accentBorder,
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 15,
-    color: '#3b2a1e',
+    color: colors.text,
     textAlign: 'right',
     writingDirection: 'rtl',
   },
@@ -207,7 +212,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    borderRadius: 12,
+    borderRadius: radii.md,
     paddingVertical: 13,
     alignItems: 'center',
   },
@@ -216,26 +221,26 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   submitButton: {
-    backgroundColor: '#c1541c',
+    backgroundColor: colors.accent,
   },
   buttonDisabled: {
-    backgroundColor: '#c9b6a0',
+    backgroundColor: colors.cardDisabled,
   },
   submitText: {
+    fontFamily: FONTS.bold,
     fontSize: 15,
-    fontWeight: '700',
-    color: '#fff',
+    color: colors.textOnAccent,
     writingDirection: 'rtl',
   },
   cancelButton: {
-    backgroundColor: '#f7e3d0',
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: '#e8c199',
+    borderColor: colors.accentBorder,
   },
   cancelText: {
+    fontFamily: FONTS.bold,
     fontSize: 15,
-    fontWeight: '700',
-    color: '#c1541c',
+    color: colors.accent,
     writingDirection: 'rtl',
   },
 });

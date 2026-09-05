@@ -1,5 +1,9 @@
 import { forwardRef } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FONTS } from '../utils/fonts';
+import { colors } from '../theme/colors';
+import { radii } from '../theme/radii';
+import { shadows } from '../theme/shadows';
 
 interface LetterBoxInputProps {
   value: string;
@@ -66,19 +70,21 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderWidth: 2,
-    borderColor: '#d8c4ac',
-    borderRadius: 11,
+    borderColor: colors.border,
+    borderRadius: radii.md,
     marginHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fffaf3',
+    backgroundColor: colors.surface,
   },
   cellFilled: {
-    borderColor: '#c1541c',
+    borderColor: colors.accent,
+    ...shadows.showcase,
   },
   cellText: {
+    fontFamily: FONTS.bold,
     fontSize: 24,
-    fontWeight: '700',
+    color: colors.text,
   },
   hiddenInput: {
     position: 'absolute',
