@@ -1,26 +1,38 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { DIFFICULTY_LEVELS } from '../data/riddles';
+import { WORD_LENGTHS } from '../data/riddles';
 
 const STORAGE_KEY = 'bullseye-words:progress';
 
 export interface Progress {
   wordLength: number;
+  // Number of completed stages per word length. The next playable stage
+  // for a length is the one at this index (0-based).
+  completedStages: Record<number, number>;
 }
 
-const DEFAULT_PROGRESS: Progress = { wordLength: DIFFICULTY_LEVELS[0] };
+const DEFAULT_PROGRESS: Progress = {
+  wordLength: WORD_LENGTHS[0],
+  completedStages: {},
+};
 
 export async function loadProgress(): Promise<Progress> {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_PROGRESS;
-    const parsed = JSON.parse(raw) as Progress;
+    const parsed = JSON.parse(raw) as Partial<Progress>;
     if (
       typeof parsed.wordLength !== 'number' ||
-      !DIFFICULTY_LEVELS.includes(parsed.wordLength)
+      !WORD_LENGTHS.includes(parsed.wordLength)
     ) {
       return DEFAULT_PROGRESS;
     }
-    return parsed;
+    return {
+      wordLength: parsed.wordLength,
+      completedStages:
+        parsed.completedStages && typeof parsed.completedStages === 'object'
+          ? parsed.completedStages
+          : {},
+    };
   } catch {
     return DEFAULT_PROGRESS;
   }

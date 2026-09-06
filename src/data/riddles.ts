@@ -1,6 +1,6 @@
 /**
  * Hand-picked riddles (word + clue), grouped by word length. Used so a
- * chosen difficulty level always has a guaranteed clue to show, unlike
+ * chosen word length always has a guaranteed clue to show, unlike
  * the full dictionary in wordBank.ts where most words have no riddle.
  * Every word here also appears in WORDS_BY_LENGTH for its length.
  */
@@ -47,7 +47,7 @@ export const RIDDLES_BY_LENGTH: Record<number, Riddle[]> = {
   ],
 };
 
-export const DIFFICULTY_LEVELS = Object.keys(RIDDLES_BY_LENGTH)
+export const WORD_LENGTHS = Object.keys(RIDDLES_BY_LENGTH)
   .map(Number)
   .sort((a, b) => a - b);
 

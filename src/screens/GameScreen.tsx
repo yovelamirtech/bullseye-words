@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { scoreGuess, isWinningGuess, type GuessResult } from '../logic/game';
-import { isValidWord, pickRoundTarget } from '../data/words';
+import { isValidWord, getStageTarget } from '../data/words';
 import GuessRow from '../components/GuessRow';
 import LetterBoxInput from '../components/LetterBoxInput';
 import ReportModal from '../components/ReportModal';
@@ -33,13 +33,19 @@ interface GuessEntry {
 
 interface GameScreenProps {
   wordLength: number;
-  onChangeDifficulty: () => void;
+  stageIndex: number;
+  totalStages: number;
+  onCompleteStage: () => void;
+  onBackToStages: () => void;
   onOpenSettings: () => void;
 }
 
 export default function GameScreen({
   wordLength,
-  onChangeDifficulty,
+  stageIndex,
+  totalStages,
+  onCompleteStage,
+  onBackToStages,
   onOpenSettings,
 }: GameScreenProps) {
   const [target, setTarget] = useState('');
@@ -60,8 +66,8 @@ export default function GameScreen({
     setReportVisible(true);
   }
 
-  function startNewRound() {
-    const round = pickRoundTarget(wordLength);
+  function startStage() {
+    const round = getStageTarget(wordLength, stageIndex);
     setTarget(round?.word ?? '');
     setClue(round?.clue ?? '');
     setClueVisible(false);
@@ -72,9 +78,9 @@ export default function GameScreen({
   }
 
   useEffect(() => {
-    startNewRound();
+    startStage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wordLength]);
+  }, [wordLength, stageIndex]);
 
   const canSubmit = useMemo(
     () => input.length === wordLength && !won && target.length > 0,
@@ -137,15 +143,17 @@ export default function GameScreen({
       <View style={styles.flex}>
         <Text style={styles.title}>בול פגיעה</Text>
         <View style={styles.header}>
-          <Text style={styles.subtitle}>מילה בת {wordLength} אותיות</Text>
+          <Text style={styles.subtitle}>
+            שלב {stageIndex + 1} מתוך {totalStages} · {wordLength} אותיות
+          </Text>
           <Pressable
             onPress={() => {
               tapHaptic();
               playClickSound();
-              onChangeDifficulty();
+              onBackToStages();
             }}
           >
-            <Text style={styles.changeLink}>שינוי דרגת קושי</Text>
+            <Text style={styles.changeLink}>חזרה למסלול</Text>
           </Pressable>
         </View>
         {clue.length > 0 &&
@@ -172,10 +180,12 @@ export default function GameScreen({
               onPress={() => {
                 tapHaptic();
                 playClickSound();
-                startNewRound();
+                onCompleteStage();
               }}
             >
-              <Text style={styles.buttonText}>מילה חדשה</Text>
+              <Text style={styles.buttonText}>
+                {stageIndex + 1 < totalStages ? 'לשלב הבא' : 'חזרה למסלול'}
+              </Text>
             </Pressable>
           </View>
         ) : (
@@ -297,13 +307,14 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: colors.text,
     textAlign: 'center',
-    marginTop: 12,
+    marginTop: 24,
   },
   header: {
-    flexDirection: 'row-reverse',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 12,
+    gap: 4,
+    marginTop: 8,
     marginBottom: 4,
   },
   subtitle: {
