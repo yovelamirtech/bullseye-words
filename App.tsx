@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import DifficultyScreen from './src/screens/DifficultyScreen';
@@ -58,36 +59,38 @@ export default function App() {
   }
 
   return (
-    <View style={styles.root}>
-      <View style={styles.content}>
-        {screen === 'difficulty' ? (
-          <DifficultyScreen
-            initialLength={wordLength}
-            onSelect={handleSelectDifficulty}
-            onOpenSettings={() => setSettingsOpen(true)}
-          />
-        ) : (
-          <GameScreen
-            wordLength={wordLength}
-            onChangeDifficulty={() => setScreen('difficulty')}
-            onOpenSettings={() => setSettingsOpen(true)}
-          />
-        )}
+    <SafeAreaProvider>
+      <View style={styles.root}>
+        <View style={styles.content}>
+          {screen === 'difficulty' ? (
+            <DifficultyScreen
+              initialLength={wordLength}
+              onSelect={handleSelectDifficulty}
+              onOpenSettings={() => setSettingsOpen(true)}
+            />
+          ) : (
+            <GameScreen
+              wordLength={wordLength}
+              onChangeDifficulty={() => setScreen('difficulty')}
+              onOpenSettings={() => setSettingsOpen(true)}
+            />
+          )}
 
-        <AnimatedModal visible={settingsOpen} onRequestClose={() => setSettingsOpen(false)}>
-          <SettingsScreen
-            settings={settings}
-            onBack={() => setSettingsOpen(false)}
-            onToggleSound={(value) => updateSettings({ ...settings, soundEnabled: value })}
-            onToggleHaptic={(value) => updateSettings({ ...settings, hapticEnabled: value })}
-          />
-        </AnimatedModal>
+          <AnimatedModal visible={settingsOpen} onRequestClose={() => setSettingsOpen(false)}>
+            <SettingsScreen
+              settings={settings}
+              onBack={() => setSettingsOpen(false)}
+              onToggleSound={(value) => updateSettings({ ...settings, soundEnabled: value })}
+              onToggleHaptic={(value) => updateSettings({ ...settings, hapticEnabled: value })}
+            />
+          </AnimatedModal>
 
-        <StatusBar style="auto" />
+          <StatusBar style="auto" />
+        </View>
+
+        <BottomBannerAd />
       </View>
-
-      <BottomBannerAd />
-    </View>
+    </SafeAreaProvider>
   );
 }
 
