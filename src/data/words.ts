@@ -1,6 +1,6 @@
 import { normalizeSofit } from '../logic/hebrew';
 import { WORDS_BY_LENGTH } from './wordBank';
-import { pickRandomRiddle, type Riddle } from './riddles';
+import { getRiddlesForLength, type Riddle } from './riddles';
 
 export { WORDS_BY_LENGTH };
 
@@ -12,22 +12,39 @@ export function getWordsForLevel(wordLength: number): string[] {
   return WORDS_BY_LENGTH[wordLength] ?? [];
 }
 
-export function pickRandomWord(wordLength: number): string | undefined {
-  const words = getWordsForLevel(wordLength);
-  if (words.length === 0) return undefined;
-  return words[Math.floor(Math.random() * words.length)];
-}
+// Number of stages in a word length's progression.
+export const STAGES_PER_LENGTH = 20;
 
 /**
- * Picks the target word for a round. Prefers a riddle from the curated
- * set for `wordLength` so a clue is always available; falls back to a
- * random dictionary word for lengths without riddles.
+ * The ordered list of stage words for a word length: curated riddle words
+ * first (a clue is always available, making them the easier opening
+ * stages), followed by plain dictionary words for later, clue-less and
+ * therefore harder stages.
  */
-export function pickRoundTarget(wordLength: number): Riddle | undefined {
-  const riddle = pickRandomRiddle(wordLength);
-  if (riddle) return riddle;
-  const word = pickRandomWord(wordLength);
-  return word ? { word, clue: '' } : undefined;
+function getStageWordPool(wordLength: number): string[] {
+  const riddleWords = getRiddlesForLength(wordLength).map((r) => r.word);
+  const riddleSet = new Set(riddleWords.map(normalizeSofit));
+  const otherWords = getWordsForLevel(wordLength).filter(
+    (w) => !riddleSet.has(normalizeSofit(w))
+  );
+  return [...riddleWords, ...otherWords].slice(0, STAGES_PER_LENGTH);
+}
+
+export function getStageCount(wordLength: number): number {
+  return getStageWordPool(wordLength).length;
+}
+
+/** The target word (with clue, if one is curated) for a specific stage. */
+export function getStageTarget(
+  wordLength: number,
+  stageIndex: number
+): Riddle | undefined {
+  const word = getStageWordPool(wordLength)[stageIndex];
+  if (!word) return undefined;
+  const riddle = getRiddlesForLength(wordLength).find(
+    (r) => normalizeSofit(r.word) === normalizeSofit(word)
+  );
+  return riddle ?? { word, clue: '' };
 }
 
 // Sets of sofit-normalized dictionary words, keyed by word length, built
