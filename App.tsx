@@ -7,6 +7,7 @@ import GameScreen from './src/screens/GameScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import AnimatedModal from './src/components/AnimatedModal';
 import BottomBannerAd from './src/components/BottomBannerAd';
+import { initializeAds } from './src/ads/adsInit';
 import { loadProgress, saveProgress } from './src/state/progress';
 import { loadSettings, saveSettings, type Settings } from './src/state/settings';
 import { setHapticEnabled } from './src/utils/haptics';
@@ -23,6 +24,10 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>('difficulty');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const fontsReady = useAppFonts();
+
+  useEffect(() => {
+    initializeAds();
+  }, []);
 
   useEffect(() => {
     if (!fontsReady) return;

@@ -56,11 +56,26 @@ win/level-transition UI.
 
 ## App store readiness
 
+- Display name in `app.json` is "בול-מילה"; the `slug`
+  (`bullseye-words`) stays as-is since it's just the internal Expo
+  project identifier, not user-facing.
 - Privacy policy: [PRIVACY.md](./PRIVACY.md) (link to the GitHub-rendered
-  page — `https://github.com/Yovel-sys/bullseye-words/blob/main/PRIVACY.md`
+  page — `https://github.com/yovelamirtech/bullseye-words/blob/main/PRIVACY.md`
   — when filling out App Store Connect / Play Console privacy fields).
+  It documents the real AdMob banner ad unit already wired in
+  `app.json` / `src/ads/adUnitIds.ts`.
 - `app.json` has real `ios.bundleIdentifier` / `android.package`
-  (`com.yovelsys.bullseyewords`) and starting build numbers.
+  (`com.yovelsys.bullseyewords`), starting build numbers, and an
+  `ios.infoPlist.NSUserTrackingUsageDescription` string (required by
+  Apple because the app links Google Mobile Ads / accesses IDFA).
+- `src/ads/adsInit.ts` runs once on launch: it gathers GDPR consent via
+  AdMob's `AdsConsent` API (required by Google for EEA/UK/Switzerland
+  users regardless of where the publisher is based) and, on iOS, asks
+  for App Tracking Transparency permission before the SDK initializes.
+  Run `npx expo install expo-tracking-transparency` once to make sure
+  the version pinned in `package.json` matches your installed Expo SDK
+  exactly, then run a real build (not Expo Go) to see the consent/ATT
+  prompts — they don't appear in Expo Go.
 - `eas.json` defines `development`, `preview`, and `production` build
   profiles plus a `submit.production` target. Before the first build,
   run `eas init` (requires an Expo account) to link the project and
@@ -68,4 +83,6 @@ win/level-transition UI.
   field if building under an Expo organization account.
 - Still needed before submission: Apple Developer / Google Play Console
   accounts, store listing assets (screenshots, descriptions, content
-  rating), and a device test pass (see the summary shared separately).
+  rating — declare "Advertising ID" / "Approximate location" data
+  collection in both stores' data-safety questionnaires because of
+  AdMob), and a device test pass.
