@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
-import { AdsConsent, AdsConsentStatus, MobileAds } from 'react-native-google-mobile-ads';
 import { getTrackingPermissionsAsync, requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
+import { isExpoGo } from './isExpoGo';
 
 /**
  * מריץ פעם אחת בעליית האפליקציה, לפני שמוצגת הפרסומת הראשונה:
@@ -12,6 +12,13 @@ import { getTrackingPermissionsAsync, requestTrackingPermissionsAsync } from 'ex
  * במקרה הגרוע ביותר הפרסומות פשוט יוצגו במצב לא-מותאם אישית.
  */
 export async function initializeAds(): Promise<void> {
+  // ב-Expo Go אין את המודול הנייטיבי של react-native-google-mobile-ads בכלל
+  // (הוא קיים רק ב-dev client מותאם אישית / build עצמאי) - אפילו ה-import
+  // שלו יקרוס עם "RNGoogleMobileAdsModule could not be found".
+  if (isExpoGo) return;
+
+  const { AdsConsent, AdsConsentStatus, MobileAds } = await import('react-native-google-mobile-ads');
+
   try {
     const consentInfo = await AdsConsent.requestInfoUpdate();
     if (consentInfo.isConsentFormAvailable && consentInfo.status === AdsConsentStatus.REQUIRED) {
