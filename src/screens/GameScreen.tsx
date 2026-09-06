@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -136,10 +134,7 @@ export default function GameScreen({
       >
         <Ionicons name="flag-outline" size={18} color={colors.accent} />
       </Pressable>
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <View style={styles.flex}>
         <Text style={styles.title}>בול פגיעה</Text>
         <View style={styles.header}>
           <Text style={styles.subtitle}>מילה בת {wordLength} אותיות</Text>
@@ -234,7 +229,7 @@ export default function GameScreen({
             <Text style={styles.hint}>הניחושים שלך יופיעו כאן</Text>
           }
         />
-      </KeyboardAvoidingView>
+      </View>
 
       <ReportModal
         visible={reportVisible}

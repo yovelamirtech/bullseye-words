@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Keyboard, Platform, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -24,22 +24,10 @@ export default function App() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [screen, setScreen] = useState<Screen>('difficulty');
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const fontsReady = useAppFonts();
 
   useEffect(() => {
     initializeAds();
-  }, []);
-
-  useEffect(() => {
-    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-    const showSub = Keyboard.addListener(showEvent, () => setKeyboardVisible(true));
-    const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardVisible(false));
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
   }, []);
 
   useEffect(() => {
@@ -72,7 +60,10 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <View style={styles.root}>
+      <KeyboardAvoidingView
+        style={styles.root}
+        behavior={Platform.OS === 'ios' ? 'height' : undefined}
+      >
         <View style={styles.content}>
           {screen === 'difficulty' ? (
             <DifficultyScreen
@@ -100,8 +91,8 @@ export default function App() {
           <StatusBar style="auto" />
         </View>
 
-        {!keyboardVisible && <BottomBannerAd />}
-      </View>
+        <BottomBannerAd />
+      </KeyboardAvoidingView>
     </SafeAreaProvider>
   );
 }
