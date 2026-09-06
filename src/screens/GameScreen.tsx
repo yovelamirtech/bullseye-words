@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   },
   settingsButton: {
     position: 'absolute',
-    top: 44,
+    top: 58,
     left: 20,
     width: 40,
     height: 40,
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   },
   reportButton: {
     position: 'absolute',
-    top: 44,
+    top: 58,
     left: 68,
     width: 40,
     height: 40,
