@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -60,7 +60,10 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <View style={styles.root}>
+      <KeyboardAvoidingView
+        style={styles.root}
+        behavior={Platform.OS === 'ios' ? 'height' : undefined}
+      >
         <View style={styles.content}>
           {screen === 'difficulty' ? (
             <DifficultyScreen
@@ -89,7 +92,7 @@ export default function App() {
         </View>
 
         <BottomBannerAd />
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaProvider>
   );
 }
