@@ -1,5 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
 import type { GuessResult } from '../logic/game';
+import { FONTS } from '../utils/fonts';
+import { colors } from '../theme/colors';
+import { radii } from '../theme/radii';
 
 interface GuessRowProps {
   guess: string;
@@ -40,29 +43,30 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderWidth: 1,
-    borderColor: '#d8c4ac',
-    borderRadius: 9,
+    borderColor: colors.border,
+    borderRadius: radii.sm,
     marginHorizontal: 3,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fffaf3',
+    backgroundColor: colors.surface,
   },
   cellText: {
+    fontFamily: FONTS.medium,
     fontSize: 20,
-    fontWeight: '600',
+    color: colors.text,
   },
   score: {
     flexDirection: 'row-reverse',
     minWidth: 120,
   },
   bulls: {
+    fontFamily: FONTS.bold,
     marginHorizontal: 4,
-    color: '#4f7942',
-    fontWeight: '700',
+    color: colors.success,
   },
   hits: {
+    fontFamily: FONTS.bold,
     marginHorizontal: 4,
-    color: '#b8860b',
-    fontWeight: '700',
+    color: colors.warning,
   },
 });

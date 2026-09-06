@@ -9,6 +9,7 @@ import { loadProgress, saveProgress } from './src/state/progress';
 import { loadSettings, saveSettings, type Settings } from './src/state/settings';
 import { setHapticEnabled } from './src/utils/haptics';
 import { setSoundEnabled } from './src/utils/sound';
+import { useAppFonts } from './src/utils/fonts';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -19,8 +20,10 @@ export default function App() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [screen, setScreen] = useState<Screen>('difficulty');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const fontsReady = useAppFonts();
 
   useEffect(() => {
+    if (!fontsReady) return;
     Promise.all([loadProgress(), loadSettings()]).then(([progress, loadedSettings]) => {
       setWordLength(progress.wordLength);
       setHapticEnabled(loadedSettings.hapticEnabled);
@@ -28,7 +31,7 @@ export default function App() {
       setSettings(loadedSettings);
       SplashScreen.hideAsync();
     });
-  }, []);
+  }, [fontsReady]);
 
   function handleSelectDifficulty(length: number) {
     setWordLength(length);
@@ -43,7 +46,7 @@ export default function App() {
     saveSettings(next);
   }
 
-  if (wordLength === null || settings === null) {
+  if (!fontsReady || wordLength === null || settings === null) {
     return null;
   }
 

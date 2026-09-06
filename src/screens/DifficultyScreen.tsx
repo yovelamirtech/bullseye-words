@@ -6,10 +6,13 @@ import {
   Text,
   View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { DIFFICULTY_LEVELS } from '../data/riddles';
 import { selectionHaptic, tapHaptic } from '../utils/haptics';
 import { playClickSound } from '../utils/sound';
-import GearIcon from '../components/GearIcon';
+import { FONTS } from '../utils/fonts';
+import { colors } from '../theme/colors';
+import { radii } from '../theme/radii';
 
 interface DifficultyScreenProps {
   initialLength: number;
@@ -43,7 +46,7 @@ export default function DifficultyScreen({
         }}
         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
       >
-        <GearIcon size={20} color="#c1541c" />
+        <Ionicons name="settings-outline" size={20} color={colors.accent} />
       </Pressable>
       <Text style={styles.title}>בול פגיעה</Text>
       <Text style={styles.subtitle}>בחר/י דרגת קושי</Text>
@@ -96,7 +99,7 @@ export default function DifficultyScreen({
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#fdf3e7',
+    backgroundColor: colors.background,
     alignItems: 'center',
     paddingTop: 40,
   },
@@ -106,22 +109,24 @@ const styles = StyleSheet.create({
     left: 20,
     width: 40,
     height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f7e3d0',
+    borderRadius: radii.xl,
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: '#e8c199',
+    borderColor: colors.accentBorder,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1,
   },
   title: {
+    fontFamily: FONTS.display,
     fontSize: 32,
-    fontWeight: '800',
+    color: colors.text,
     textAlign: 'center',
   },
   subtitle: {
+    fontFamily: FONTS.regular,
     fontSize: 18,
-    color: '#8a7360',
+    color: colors.textMuted,
     marginTop: 8,
     marginBottom: 24,
     textAlign: 'center',
@@ -136,44 +141,45 @@ const styles = StyleSheet.create({
   card: {
     width: 100,
     minHeight: 96,
-    borderRadius: 14,
+    borderRadius: radii.md,
     borderWidth: 2,
-    borderColor: '#d8c4ac',
-    backgroundColor: '#fffaf3',
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 10,
     paddingHorizontal: 6,
   },
   cardSelected: {
-    borderColor: '#c1541c',
-    backgroundColor: '#c1541c',
+    borderColor: colors.accent,
+    backgroundColor: colors.accent,
   },
   cardLength: {
+    fontFamily: FONTS.bold,
     fontSize: 18,
-    fontWeight: '800',
-    color: '#3b2a1e',
+    color: colors.text,
     textAlign: 'center',
   },
   cardLabel: {
+    fontFamily: FONTS.regular,
     fontSize: 13,
-    color: '#8a7360',
+    color: colors.textMuted,
     marginTop: 4,
     textAlign: 'center',
   },
   cardTextSelected: {
-    color: '#fff',
+    color: colors.textOnAccent,
   },
   button: {
     marginTop: 32,
-    backgroundColor: '#c1541c',
-    borderRadius: 10,
+    backgroundColor: colors.accent,
+    borderRadius: radii.sm,
     paddingHorizontal: 32,
     paddingVertical: 14,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: '700',
+    fontFamily: FONTS.bold,
+    color: colors.textOnAccent,
     fontSize: 18,
   },
 });
