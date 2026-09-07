@@ -23,6 +23,8 @@ export default function StagesScreen({
 }: StagesScreenProps) {
   const totalStages = getStageCount(wordLength);
   const stages = Array.from({ length: totalStages }, (_, i) => i);
+  const progressPercent =
+    totalStages > 0 ? Math.round((completedCount / totalStages) * 100) : 0;
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -39,11 +41,10 @@ export default function StagesScreen({
           <Ionicons name="chevron-forward" size={22} color={colors.accent} />
         </Pressable>
         <Text style={styles.title}>{wordLength} אותיות</Text>
-        <Text style={styles.subtitle}>
-          {completedCount > 0
-            ? `הושלמו ${completedCount} מתוך ${totalStages} שלבים`
-            : `${totalStages} שלבים לפניך`}
-        </Text>
+        <View style={styles.meterTrack}>
+          <View style={[styles.meterFill, { width: `${progressPercent}%` }]} />
+          <Text style={styles.meterText}>{progressPercent}%</Text>
+        </View>
       </View>
 
       <FlatList
@@ -128,12 +129,29 @@ const styles = StyleSheet.create({
     color: colors.text,
     textAlign: 'center',
   },
-  subtitle: {
-    fontFamily: FONTS.regular,
-    fontSize: 15,
-    color: colors.textMuted,
-    marginTop: 6,
-    textAlign: 'center',
+  meterTrack: {
+    width: 160,
+    height: 20,
+    borderRadius: radii.pill,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+    marginTop: 10,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  meterFill: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colors.accent,
+  },
+  meterText: {
+    fontFamily: FONTS.bold,
+    fontSize: 11,
+    color: colors.text,
   },
   list: {
     flex: 1,
@@ -150,14 +168,14 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     borderWidth: 2,
     borderColor: colors.border,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.card,
     paddingVertical: 14,
     paddingHorizontal: 18,
     gap: 14,
   },
   cardCurrent: {
     borderColor: colors.accent,
-    backgroundColor: colors.card,
+    borderWidth: 3,
   },
   cardLocked: {
     opacity: 0.6,
