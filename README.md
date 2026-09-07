@@ -22,14 +22,20 @@ or simulator.
 - `src/logic/hebrew.ts` — the sofit-letter normalization helper.
 - `src/data/wordBank.ts` — generated Hebrew word bank (~23k words),
   grouped by word length, covering lengths 2-10.
-- `src/data/words.ts` — level helpers (`pickRandomWord`,
-  `getWordsForLevel`) plus `isValidWord`, which checks a guess against
-  the dictionary (sofit-normalized) so only real words are accepted.
-- `src/state/progress.ts` — persists the player's current level locally
-  via `@react-native-async-storage/async-storage`.
+- `src/data/words.ts` — word-length helpers (`getWordsForLevel`,
+  `getStageTarget`, `getStageCount`) plus `isValidWord`, which checks a
+  guess against the dictionary (sofit-normalized) so only real words are
+  accepted.
+- `src/state/progress.ts` — persists the player's selected word length and
+  completed-stage counts locally via
+  `@react-native-async-storage/async-storage`.
+- `src/screens/GameTypesScreen.tsx` — lets the player pick how many
+  letters to play with.
+- `src/screens/StagesScreen.tsx` — shows stage-by-stage progress for the
+  chosen word length.
 - `src/screens/GameScreen.tsx` — the main game screen: guess input
   (rejecting non-dictionary words with an inline error), guess history
-  with bull/hit feedback, and level progression.
+  with bull/hit feedback, and stage completion.
 - `src/components/GuessRow.tsx` — renders one past guess as a letter
   grid plus its score.
 
