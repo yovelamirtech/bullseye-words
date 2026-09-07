@@ -33,8 +33,7 @@ export default function GameTypesScreen({
       >
         <Ionicons name="settings-outline" size={20} color={colors.accent} />
       </Pressable>
-      <Text style={styles.title}>בול פגיעה</Text>
-      <Text style={styles.subtitle}>בכמה אותיות תרצו לשחק?</Text>
+      <Text style={styles.subtitle}>בחרו כמה אותיות</Text>
 
       <ScrollView
         style={styles.list}
@@ -44,6 +43,7 @@ export default function GameTypesScreen({
         {WORD_LENGTHS.map((length) => {
           const total = getStageCount(length);
           const completed = Math.min(completedStages[length] ?? 0, total);
+          const letterBoxes = Array.from({ length });
           return (
             <Pressable
               key={length}
@@ -55,7 +55,11 @@ export default function GameTypesScreen({
               }}
             >
               <View style={styles.cardText}>
-                <Text style={styles.cardLength}>{length} אותיות</Text>
+                <View style={styles.boxesRow}>
+                  {letterBoxes.map((_, index) => (
+                    <View key={index} style={styles.letterBox} />
+                  ))}
+                </View>
                 <Text style={styles.cardProgress}>
                   {completed > 0
                     ? `הושלמו ${completed} מתוך ${total} שלבים`
@@ -80,7 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     alignItems: 'center',
-    paddingTop: 40,
+    paddingTop: 64,
   },
   settingsButton: {
     position: 'absolute',
@@ -96,16 +100,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 1,
   },
-  title: {
-    fontFamily: FONTS.display,
-    fontSize: 32,
-    color: colors.text,
-    textAlign: 'center',
-  },
   subtitle: {
-    fontFamily: FONTS.regular,
-    fontSize: 18,
-    color: colors.textMuted,
+    fontFamily: FONTS.medium,
+    fontSize: 20,
+    color: colors.text,
     marginTop: 8,
     marginBottom: 24,
     textAlign: 'center',
@@ -133,17 +131,23 @@ const styles = StyleSheet.create({
   cardText: {
     alignItems: 'flex-end',
   },
-  cardLength: {
-    fontFamily: FONTS.bold,
-    fontSize: 20,
-    color: colors.text,
-    textAlign: 'right',
+  boxesRow: {
+    flexDirection: 'row-reverse',
+    gap: 6,
+  },
+  letterBox: {
+    width: 34,
+    height: 34,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderRadius: radii.md,
+    backgroundColor: colors.surface,
   },
   cardProgress: {
     fontFamily: FONTS.regular,
     fontSize: 13,
     color: colors.textMuted,
-    marginTop: 4,
+    marginTop: 8,
     textAlign: 'right',
   },
 });
