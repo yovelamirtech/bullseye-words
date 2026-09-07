@@ -18,6 +18,7 @@ import { errorHaptic, selectionHaptic, successHaptic, tapHaptic } from '../utils
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
+import { BackButton, SettingsButton } from '../components/TopBar';
 import {
   playClickSound,
   playCorrectSound,
@@ -121,17 +122,8 @@ export default function GameScreen({
 
   return (
     <SafeAreaView style={styles.safe}>
-      <Pressable
-        style={styles.settingsButton}
-        onPress={() => {
-          tapHaptic();
-          playClickSound();
-          onOpenSettings();
-        }}
-        hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-      >
-        <Ionicons name="settings-outline" size={20} color={colors.accent} />
-      </Pressable>
+      <SettingsButton onPress={onOpenSettings} />
+      <BackButton onPress={onBackToStages} />
       <Pressable
         style={styles.reportButton}
         onPress={() => openReport('')}
@@ -146,15 +138,6 @@ export default function GameScreen({
           <Text style={styles.subtitle}>
             שלב {stageIndex + 1} מתוך {totalStages} · {wordLength} אותיות
           </Text>
-          <Pressable
-            onPress={() => {
-              tapHaptic();
-              playClickSound();
-              onBackToStages();
-            }}
-          >
-            <Text style={styles.changeLink}>חזרה למסלול</Text>
-          </Pressable>
         </View>
         {clue.length > 0 &&
           (clueVisible ? (
@@ -274,20 +257,6 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
-  settingsButton: {
-    position: 'absolute',
-    top: 58,
-    left: 20,
-    width: 40,
-    height: 40,
-    borderRadius: radii.xl,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.accentBorder,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1,
-  },
   reportButton: {
     position: 'absolute',
     top: 58,
@@ -322,12 +291,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     color: colors.textMuted,
-  },
-  changeLink: {
-    fontFamily: FONTS.regular,
-    fontSize: 14,
-    color: colors.accent,
-    textDecorationLine: 'underline',
   },
   clue: {
     fontFamily: FONTS.regular,
