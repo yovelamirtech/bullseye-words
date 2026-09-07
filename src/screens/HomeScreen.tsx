@@ -7,6 +7,7 @@ import { playClickSound } from '../utils/sound';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
+import { maxContentWidth } from '../theme/layout';
 
 interface HomeScreenProps {
   onSelectStagesJourney: () => void;
@@ -97,6 +98,8 @@ const styles = StyleSheet.create({
   },
   list: {
     width: '100%',
+    maxWidth: maxContentWidth,
+    alignSelf: 'center',
     paddingHorizontal: 20,
     gap: 14,
   },

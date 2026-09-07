@@ -18,6 +18,7 @@ import { errorHaptic, selectionHaptic, successHaptic, tapHaptic } from '../utils
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
+import { maxContentWidth } from '../theme/layout';
 import { BackButton, SettingsButton } from '../components/TopBar';
 import {
   playClickSound,
@@ -256,6 +257,9 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
+    width: '100%',
+    maxWidth: maxContentWidth,
+    alignSelf: 'center',
   },
   reportButton: {
     position: 'absolute',
