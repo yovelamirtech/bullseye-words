@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
+import HomeScreen from './src/screens/HomeScreen';
 import GameTypesScreen from './src/screens/GameTypesScreen';
 import StagesScreen from './src/screens/StagesScreen';
 import GameScreen from './src/screens/GameScreen';
@@ -19,16 +20,25 @@ import { useAppFonts } from './src/utils/fonts';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
-type Screen = 'types' | 'stages' | 'game';
+type Screen = 'home' | 'types' | 'stages' | 'game';
 
 export default function App() {
   const [progress, setProgress] = useState<Progress | null>(null);
   const [wordLength, setWordLength] = useState<number | null>(null);
   const [stageIndex, setStageIndex] = useState(0);
   const [settings, setSettings] = useState<Settings | null>(null);
-  const [screen, setScreen] = useState<Screen>('types');
+  const [screenStack, setScreenStack] = useState<Screen[]>(['home']);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const fontsReady = useAppFonts();
+  const screen = screenStack[screenStack.length - 1];
+
+  function navigateTo(next: Screen) {
+    setScreenStack((prev) => [...prev, next]);
+  }
+
+  function navigateBack() {
+    setScreenStack((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
+  }
 
   useEffect(() => {
     initializeAds();
@@ -48,7 +58,7 @@ export default function App() {
 
   function handleSelectGameType(length: number) {
     setWordLength(length);
-    setScreen('stages');
+    navigateTo('stages');
     if (progress) {
       const next = { ...progress, wordLength: length };
       setProgress(next);
@@ -58,7 +68,7 @@ export default function App() {
 
   function handleSelectStage(index: number) {
     setStageIndex(index);
-    setScreen('game');
+    navigateTo('game');
   }
 
   function handleCompleteStage() {
@@ -75,7 +85,7 @@ export default function App() {
       setProgress(next);
       saveProgress(next);
     }
-    setScreen('stages');
+    navigateBack();
   }
 
   function updateSettings(next: Settings) {
@@ -101,11 +111,18 @@ export default function App() {
         behavior={Platform.OS === 'ios' ? 'height' : undefined}
       >
         <View style={styles.content}>
+          {screen === 'home' && (
+            <HomeScreen
+              onSelectStagesJourney={() => navigateTo('types')}
+              onOpenSettings={() => setSettingsOpen(true)}
+            />
+          )}
           {screen === 'types' && (
             <GameTypesScreen
               completedStages={progress.completedStages}
               onSelect={handleSelectGameType}
               onOpenSettings={() => setSettingsOpen(true)}
+              onBack={navigateBack}
             />
           )}
           {screen === 'stages' && (
@@ -113,7 +130,8 @@ export default function App() {
               wordLength={wordLength}
               completedCount={completedForLength}
               onSelectStage={handleSelectStage}
-              onBack={() => setScreen('types')}
+              onBack={navigateBack}
+              onOpenSettings={() => setSettingsOpen(true)}
             />
           )}
           {screen === 'game' && (
@@ -122,7 +140,7 @@ export default function App() {
               stageIndex={stageIndex}
               totalStages={getStageCount(wordLength)}
               onCompleteStage={handleCompleteStage}
-              onBackToStages={() => setScreen('stages')}
+              onBackToStages={navigateBack}
               onOpenSettings={() => setSettingsOpen(true)}
             />
           )}

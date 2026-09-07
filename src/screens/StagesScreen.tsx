@@ -2,18 +2,20 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { getStageCount } from '../data/words';
-import { selectionHaptic, tapHaptic } from '../utils/haptics';
+import { selectionHaptic } from '../utils/haptics';
 import { playClickSound } from '../utils/sound';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
 import ProgressMeter from '../components/ProgressMeter';
+import { BackButton, SettingsButton } from '../components/TopBar';
 
 interface StagesScreenProps {
   wordLength: number;
   completedCount: number;
   onSelectStage: (stageIndex: number) => void;
   onBack: () => void;
+  onOpenSettings: () => void;
 }
 
 export default function StagesScreen({
@@ -21,6 +23,7 @@ export default function StagesScreen({
   completedCount,
   onSelectStage,
   onBack,
+  onOpenSettings,
 }: StagesScreenProps) {
   const totalStages = getStageCount(wordLength);
   const stages = Array.from({ length: totalStages }, (_, i) => i);
@@ -29,18 +32,9 @@ export default function StagesScreen({
 
   return (
     <SafeAreaView style={styles.safe}>
+      <SettingsButton onPress={onOpenSettings} />
+      <BackButton onPress={onBack} />
       <View style={styles.header}>
-        <Pressable
-          style={styles.backButton}
-          onPress={() => {
-            tapHaptic();
-            playClickSound();
-            onBack();
-          }}
-          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-        >
-          <Ionicons name="chevron-forward" size={22} color={colors.accent} />
-        </Pressable>
         <Text style={styles.title}>{wordLength} אותיות</Text>
         <View style={styles.meterWrapper}>
           <ProgressMeter percent={progressPercent} width={140} />
@@ -104,24 +98,11 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingTop: 40,
+    paddingTop: 64,
   },
   header: {
     alignItems: 'center',
     marginBottom: 16,
-  },
-  backButton: {
-    position: 'absolute',
-    top: 0,
-    right: 20,
-    width: 40,
-    height: 40,
-    borderRadius: radii.xl,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.accentBorder,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   title: {
     fontFamily: FONTS.display,

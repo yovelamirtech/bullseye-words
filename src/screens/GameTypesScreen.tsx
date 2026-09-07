@@ -3,12 +3,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { WORD_LENGTHS } from '../data/riddles';
 import { getStageCount } from '../data/words';
-import { selectionHaptic, tapHaptic } from '../utils/haptics';
+import { selectionHaptic } from '../utils/haptics';
 import { playClickSound } from '../utils/sound';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
 import ProgressMeter from '../components/ProgressMeter';
+import { BackButton, SettingsButton } from '../components/TopBar';
 
 const HEBREW_ALPHABET = [
   'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י',
@@ -19,26 +20,19 @@ interface GameTypesScreenProps {
   completedStages: Record<number, number>;
   onSelect: (wordLength: number) => void;
   onOpenSettings: () => void;
+  onBack: () => void;
 }
 
 export default function GameTypesScreen({
   completedStages,
   onSelect,
   onOpenSettings,
+  onBack,
 }: GameTypesScreenProps) {
   return (
     <SafeAreaView style={styles.safe}>
-      <Pressable
-        style={styles.settingsButton}
-        onPress={() => {
-          tapHaptic();
-          playClickSound();
-          onOpenSettings();
-        }}
-        hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-      >
-        <Ionicons name="settings-outline" size={20} color={colors.accent} />
-      </Pressable>
+      <SettingsButton onPress={onOpenSettings} />
+      <BackButton onPress={onBack} />
       <Text style={styles.subtitle}>בחרו כמה אותיות</Text>
 
       <ScrollView
@@ -92,20 +86,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: 'center',
     paddingTop: 64,
-  },
-  settingsButton: {
-    position: 'absolute',
-    top: 58,
-    left: 20,
-    width: 40,
-    height: 40,
-    borderRadius: radii.xl,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.accentBorder,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1,
   },
   subtitle: {
     fontFamily: FONTS.medium,
