@@ -10,6 +10,11 @@ import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
 import ProgressMeter from '../components/ProgressMeter';
 
+const HEBREW_ALPHABET = [
+  'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י',
+  'כ', 'ל', 'מ', 'נ', 'ס', 'ע', 'פ', 'צ', 'ק', 'ר', 'ש', 'ת',
+];
+
 interface GameTypesScreenProps {
   completedStages: Record<number, number>;
   onSelect: (wordLength: number) => void;
@@ -59,7 +64,9 @@ export default function GameTypesScreen({
               <View style={styles.cardText}>
                 <View style={styles.boxesRow}>
                   {letterBoxes.map((_, index) => (
-                    <View key={index} style={styles.letterBox} />
+                    <View key={index} style={styles.letterBox}>
+                      <Text style={styles.letterBoxText}>{HEBREW_ALPHABET[index]}</Text>
+                    </View>
                   ))}
                 </View>
                 <ProgressMeter percent={percent} width={100} />
@@ -148,5 +155,12 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: radii.md,
     backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  letterBoxText: {
+    fontFamily: FONTS.bold,
+    fontSize: 16,
+    color: colors.text,
   },
 });

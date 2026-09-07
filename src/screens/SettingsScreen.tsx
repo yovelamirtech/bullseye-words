@@ -72,11 +72,10 @@ export default function SettingsScreen({
 }: SettingsScreenProps) {
   const [bugReportVisible, setBugReportVisible] = useState(false);
 
-  // אותו רעיון כמו במתג הרטט: בכיבוי משמיעים לפני העדכון (בזמן שהצליל עוד
-  // פעיל), ובהפעלה אחריו — כדי שהמשתמש ישמע מיד מה בחר.
+  // בניגוד למתג הרטט: כשמכבים את הצליל אסור להשמיע כלום (גם לא לפני
+  // העדכון), רק כשמדליקים משמיעים צליל בתור משוב.
   function handleToggleSound(value: boolean) {
     tapHaptic();
-    if (!value) playClickSound();
     onToggleSound(value);
     if (value) playClickSound();
   }
