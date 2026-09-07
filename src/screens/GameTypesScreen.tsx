@@ -8,6 +8,7 @@ import { playClickSound } from '../utils/sound';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
+import { maxContentWidth } from '../theme/layout';
 import ProgressMeter from '../components/ProgressMeter';
 import { BackButton, SettingsButton } from '../components/TopBar';
 
@@ -97,6 +98,8 @@ const styles = StyleSheet.create({
   },
   list: {
     width: '100%',
+    maxWidth: maxContentWidth,
+    alignSelf: 'center',
   },
   listContent: {
     paddingHorizontal: 20,
