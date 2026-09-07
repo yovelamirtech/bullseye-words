@@ -64,11 +64,13 @@ export default function GameTypesScreen({
                 </View>
                 <ProgressMeter percent={percent} width={100} />
               </View>
-              <Ionicons
-                name="chevron-back"
-                size={22}
-                color={colors.accent}
-              />
+              <View style={styles.chevronWrapper}>
+                <Ionicons
+                  name="chevron-back"
+                  size={22}
+                  color={colors.accent}
+                />
+              </View>
             </Pressable>
           );
         })}
@@ -115,9 +117,6 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   card: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     width: '100%',
     borderRadius: radii.md,
     borderWidth: 2,
@@ -125,17 +124,26 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     paddingVertical: 18,
     paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  chevronWrapper: {
+    position: 'absolute',
+    left: 20,
+    top: '50%',
+    marginTop: -11,
   },
   cardText: {
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   boxesRow: {
     flexDirection: 'row-reverse',
-    gap: 6,
+    gap: 4,
+    marginBottom: 14,
   },
   letterBox: {
-    width: 34,
-    height: 34,
+    width: 30,
+    height: 30,
     borderWidth: 2,
     borderColor: colors.border,
     borderRadius: radii.md,
