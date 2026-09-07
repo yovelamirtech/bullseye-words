@@ -1,4 +1,9 @@
-import { WORD_LENGTHS, RIDDLES_BY_LENGTH } from '../riddles';
+import {
+  WORD_LENGTHS,
+  RIDDLES_BY_LENGTH,
+  getRiddlesForLength,
+  pickRandomRiddle,
+} from '../riddles';
 import { isValidWord } from '../words';
 
 describe('riddle bank', () => {
@@ -20,5 +25,27 @@ describe('riddle bank', () => {
         expect(clue.length).toBeGreaterThan(0);
       }
     }
+  });
+});
+
+describe('getRiddlesForLength', () => {
+  it('returns the riddles for a known length', () => {
+    expect(getRiddlesForLength(3)).toBe(RIDDLES_BY_LENGTH[3]);
+  });
+
+  it('returns an empty array for a length with no riddles', () => {
+    expect(getRiddlesForLength(999)).toEqual([]);
+  });
+});
+
+describe('pickRandomRiddle', () => {
+  it('returns undefined for a length with no riddles', () => {
+    expect(pickRandomRiddle(999)).toBeUndefined();
+  });
+
+  it('returns one of the curated riddles for a known length', () => {
+    const riddle = pickRandomRiddle(3);
+    expect(riddle).toBeDefined();
+    expect(RIDDLES_BY_LENGTH[3]).toContainEqual(riddle);
   });
 });
