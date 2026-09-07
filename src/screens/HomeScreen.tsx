@@ -42,7 +42,7 @@ export default function HomeScreen({
             <Ionicons name="map-outline" size={26} color={colors.accent} />
           </View>
           <View style={styles.cardText}>
-            <Text style={styles.cardTitle}>מסע שלבים</Text>
+            <Text style={styles.cardTitle}>שלבים</Text>
             <Text style={styles.cardSubtitle}>התקדמו שלב אחרי שלב</Text>
           </View>
           <Ionicons name="chevron-back" size={22} color={colors.accent} />
@@ -64,7 +64,7 @@ export default function HomeScreen({
             <Ionicons name="calendar-outline" size={26} color={colors.accent} />
           </View>
           <View style={styles.cardText}>
-            <Text style={styles.cardTitle}>שלב יומי</Text>
+            <Text style={styles.cardTitle}>אתגר יומי</Text>
             <Text style={styles.cardSubtitle}>אתגר חדש בכל יום</Text>
           </View>
           <Ionicons name="chevron-back" size={22} color={colors.accent} />
