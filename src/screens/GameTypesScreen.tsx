@@ -8,6 +8,7 @@ import { playClickSound } from '../utils/sound';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
+import ProgressMeter from '../components/ProgressMeter';
 
 interface GameTypesScreenProps {
   completedStages: Record<number, number>;
@@ -43,6 +44,7 @@ export default function GameTypesScreen({
         {WORD_LENGTHS.map((length) => {
           const total = getStageCount(length);
           const completed = Math.min(completedStages[length] ?? 0, total);
+          const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
           const letterBoxes = Array.from({ length });
           return (
             <Pressable
@@ -60,11 +62,7 @@ export default function GameTypesScreen({
                     <View key={index} style={styles.letterBox} />
                   ))}
                 </View>
-                <Text style={styles.cardProgress}>
-                  {completed > 0
-                    ? `הושלמו ${completed} מתוך ${total} שלבים`
-                    : `${total} שלבים`}
-                </Text>
+                <ProgressMeter percent={percent} width={100} />
               </View>
               <Ionicons
                 name="chevron-back"
@@ -124,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     borderWidth: 2,
     borderColor: colors.border,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.card,
     paddingVertical: 18,
     paddingHorizontal: 20,
   },
@@ -142,12 +140,5 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: radii.md,
     backgroundColor: colors.surface,
-  },
-  cardProgress: {
-    fontFamily: FONTS.regular,
-    fontSize: 13,
-    color: colors.textMuted,
-    marginTop: 8,
-    textAlign: 'right',
   },
 });

@@ -7,6 +7,7 @@ import { playClickSound } from '../utils/sound';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
+import ProgressMeter from '../components/ProgressMeter';
 
 interface StagesScreenProps {
   wordLength: number;
@@ -41,9 +42,8 @@ export default function StagesScreen({
           <Ionicons name="chevron-forward" size={22} color={colors.accent} />
         </Pressable>
         <Text style={styles.title}>{wordLength} אותיות</Text>
-        <View style={styles.meterTrack}>
-          <View style={[styles.meterFill, { width: `${progressPercent}%` }]} />
-          <Text style={styles.meterText}>{progressPercent}%</Text>
+        <View style={styles.meterWrapper}>
+          <ProgressMeter percent={progressPercent} width={140} />
         </View>
       </View>
 
@@ -129,29 +129,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     textAlign: 'center',
   },
-  meterTrack: {
-    width: 160,
-    height: 20,
-    borderRadius: radii.pill,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.accentBorder,
+  meterWrapper: {
     marginTop: 10,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  meterFill: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: colors.accent,
-  },
-  meterText: {
-    fontFamily: FONTS.bold,
-    fontSize: 11,
-    color: colors.text,
   },
   list: {
     flex: 1,
