@@ -52,6 +52,46 @@ npm start        # opens Expo dev tools; press w/a/i for web/Android/iOS
 npm test
 ```
 
+## Bug reports (Web3Forms)
+
+The in-app report forms — "דיווח על באג" in Settings and "דיווח על מילה שגויה" in the
+game — submit to [Web3Forms](https://web3forms.com), which forwards them to your inbox.
+
+1. Get a free Access Key at https://web3forms.com using the email that should receive reports.
+2. Copy `.env.example` to `.env` and fill in the key:
+
+   ```bash
+   cp .env.example .env
+   # WEB3FORMS_ACCESS_KEY=your-access-key
+   ```
+
+   On Windows PowerShell, write the file through .NET rather than `>`, which
+   defaults to UTF-16 and produces a `.env` that cannot be parsed:
+
+   ```powershell
+   [IO.File]::WriteAllText("$PWD\.env", "WEB3FORMS_ACCESS_KEY=your-access-key`n")
+   ```
+
+3. Restart the dev server so `app.config.js` picks up the new value.
+
+Verify it resolved with `npx expo config --type public` — the output should list
+`env: export WEB3FORMS_ACCESS_KEY` and an `extra.web3formsAccessKey` value. If that
+line is missing, the `.env` file is not being read.
+
+`.env` is git-ignored, so the key never lands in this public repository.
+Without a key the forms show a friendly error instead of sending.
+
+### Shipping to the stores
+
+`app.config.js` is evaluated by EAS at build time, so the key has to live in EAS
+rather than in `.env` (which stays on your machine). Register it once per
+environment:
+
+```bash
+eas env:set --name WEB3FORMS_ACCESS_KEY --value <your-access-key> \
+  --environment production --visibility sensitive
+```
+
 ## Status / next steps
 
 This is an MVP covering level 1 (2-letter words) end-to-end, with the
