@@ -12,6 +12,7 @@ import type { Settings } from '../state/settings';
 import ReportModal from '../components/ReportModal';
 import { tapHaptic, toggleHaptic } from '../utils/haptics';
 import { playClickSound } from '../utils/sound';
+import { submitToWeb3Forms } from '../utils/web3forms';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
@@ -170,6 +171,12 @@ export default function SettingsScreen({
           },
         ]}
         onClose={() => setBugReportVisible(false)}
+        onSubmit={(values) =>
+          submitToWeb3Forms(`דיווח על באג: ${values.title}`, 'בול-מילה - באג', {
+            כותרת: values.title,
+            'מה קרה': values.description.trim() || 'לא צורף תיאור',
+          })
+        }
       />
     </View>
   );

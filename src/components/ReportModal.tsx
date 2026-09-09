@@ -25,6 +25,12 @@ export interface ReportField {
   initialValue?: string;
 }
 
+interface ReportSubmitResult {
+  success: boolean;
+  /** הודעת שגיאה בעברית שתוצג למשתמש אם השליחה נכשלה */
+  message?: string;
+}
+
 interface ReportModalProps {
   visible: boolean;
   title: string;
@@ -33,15 +39,16 @@ interface ReportModalProps {
   successTitle?: string;
   successMessage?: string;
   onClose: () => void;
-  onSubmit?: (values: Record<string, string>) => void;
+  onSubmit?: (values: Record<string, string>) => Promise<ReportSubmitResult> | void;
 }
 
 function initialValues(fields: ReportField[]): Record<string, string> {
   return Object.fromEntries(fields.map((f) => [f.key, f.initialValue ?? '']));
 }
 
-// טופס דיווח כללי (באג / מילה שגויה). כרגע מוקאפ בלבד: הדיווח לא נשלח
-// לשום שרת, אלא רק מוצג מסך תודה. ה-onSubmit נועד לחיבור עתידי לשרת.
+// טופס דיווח כללי (באג / מילה שגויה). ה-onSubmit יכול להחזיר Promise עם
+// תוצאת השליחה בפועל (למשל ל-Web3Forms); הטופס מציג "שולח..." בזמן
+// ההמתנה, ומעבר למסך תודה רק אם ההחזרה מציינת הצלחה.
 export default function ReportModal({
   visible,
   title,
@@ -54,23 +61,38 @@ export default function ReportModal({
 }: ReportModalProps) {
   const [values, setValues] = useState<Record<string, string>>(() => initialValues(fields));
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // כל פתיחה מחדש של הטופס מתחילה מדף נקי (כולל ערכים שהוזנו מראש).
   useEffect(() => {
     if (visible) {
       setValues(initialValues(fields));
       setSubmitted(false);
+      setSending(false);
+      setErrorMessage(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
 
   const canSubmit = fields.every((f) => !f.required || values[f.key]?.trim());
 
-  function handleSubmit() {
-    if (!canSubmit) return;
+  async function handleSubmit() {
+    if (!canSubmit || sending) return;
+    playClickSound();
+    setSending(true);
+    setErrorMessage(null);
+
+    const result = await onSubmit?.(values);
+
+    setSending(false);
+    if (result && !result.success) {
+      setErrorMessage(result.message ?? 'השליחה נכשלה. נסו שוב.');
+      return;
+    }
+
     successHaptic();
     playCorrectSound();
-    onSubmit?.(values);
     setSubmitted(true);
   }
 
@@ -127,19 +149,25 @@ export default function ReportModal({
                   </View>
                 ))}
 
+                {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+
                 <View style={styles.buttons}>
                   <Pressable
                     style={[
                       styles.button,
                       styles.submitButton,
-                      !canSubmit && styles.buttonDisabled,
+                      (!canSubmit || sending) && styles.buttonDisabled,
                     ]}
                     onPress={handleSubmit}
-                    disabled={!canSubmit}
+                    disabled={!canSubmit || sending}
                   >
-                    <Text style={styles.submitText}>שליחה</Text>
+                    <Text style={styles.submitText}>{sending ? 'שולח...' : 'שליחה'}</Text>
                   </Pressable>
-                  <Pressable style={[styles.button, styles.cancelButton]} onPress={handleClose}>
+                  <Pressable
+                    style={[styles.button, styles.cancelButton]}
+                    onPress={handleClose}
+                    disabled={sending}
+                  >
                     <Text style={styles.cancelText}>ביטול</Text>
                   </Pressable>
                 </View>
@@ -187,6 +215,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 4,
+    writingDirection: 'rtl',
+  },
+  errorText: {
+    fontFamily: FONTS.regular,
+    fontSize: 13,
+    color: colors.error,
+    textAlign: 'center',
+    marginTop: 14,
     writingDirection: 'rtl',
   },
   fieldLabel: {

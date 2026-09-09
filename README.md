@@ -52,6 +52,28 @@ npm start        # opens Expo dev tools; press w/a/i for web/Android/iOS
 npm test
 ```
 
+## Bug reports (Web3Forms)
+
+The in-app report forms — "דיווח על באג" in Settings and "דיווח על מילה שגויה" in the
+game — submit to [Web3Forms](https://web3forms.com), which forwards them to your inbox.
+
+The Access Key ships as the default in `app.json` (`expo.extra.web3formsAccessKey`).
+It's meant to be public — Web3Forms is designed for the key to live in client-side
+code, and protects against abuse with its own rate limiting plus the honeypot field
+already sent by `src/utils/web3forms.ts`. This works out of the box in Expo Go, EAS
+builds, and the Vercel web export with no extra setup.
+
+To use a different key (e.g. after rotating it), get a free Access Key at
+https://web3forms.com and override the default without touching code:
+
+- **Locally**: copy `.env.example` to `.env` and set `WEB3FORMS_ACCESS_KEY`, then
+  restart the dev server.
+- **EAS builds**: `eas env:set --name WEB3FORMS_ACCESS_KEY --value <key> --environment production`
+- **Vercel web export**: set `WEB3FORMS_ACCESS_KEY` under Project Settings →
+  Environment Variables.
+
+`app.config.js` checks the env var first and falls back to the `app.json` default.
+
 ## Status / next steps
 
 This is an MVP covering level 1 (2-letter words) end-to-end, with the

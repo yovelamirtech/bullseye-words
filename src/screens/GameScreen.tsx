@@ -14,6 +14,7 @@ import { isValidWord, getStageTarget } from '../data/words';
 import GuessRow from '../components/GuessRow';
 import LetterBoxInput from '../components/LetterBoxInput';
 import ReportModal from '../components/ReportModal';
+import { submitToWeb3Forms } from '../utils/web3forms';
 import { errorHaptic, selectionHaptic, successHaptic, tapHaptic } from '../utils/haptics';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
@@ -245,6 +246,14 @@ export default function GameScreen({
           },
         ]}
         onClose={() => setReportVisible(false)}
+        onSubmit={(values) =>
+          submitToWeb3Forms(`דיווח על מילה שגויה: ${values.word}`, 'בול-מילה - מילה', {
+            המילה: values.word,
+            הפירוש: values.meaning.trim() || 'לא צורף פירוש',
+            'אורך המילה': String(wordLength),
+            שלב: String(stageIndex + 1),
+          })
+        }
       />
     </SafeAreaView>
   );
