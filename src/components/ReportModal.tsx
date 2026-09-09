@@ -8,6 +8,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import AnimatedModal from './AnimatedModal';
 import { successHaptic, tapHaptic } from '../utils/haptics';
 import { playClickSound, playCorrectSound } from '../utils/sound';
@@ -46,7 +47,7 @@ export default function ReportModal({
   title,
   intro,
   fields,
-  successTitle = 'תודה! 🙏',
+  successTitle = 'תודה!',
   successMessage = 'קיבלנו את הדיווח שלך ונבדוק אותו בהקדם.',
   onClose,
   onSubmit,
@@ -90,6 +91,12 @@ export default function ReportModal({
           <View style={styles.card}>
             {submitted ? (
               <>
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={40}
+                  color={colors.accent}
+                  style={styles.successIcon}
+                />
                 <Text style={styles.title}>{successTitle}</Text>
                 <Text style={styles.message}>{successMessage}</Text>
                 <Pressable
@@ -160,6 +167,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     borderRadius: radii.xl,
     padding: 20,
+  },
+  successIcon: {
+    alignSelf: 'center',
+    marginBottom: 8,
   },
   title: {
     fontFamily: FONTS.bold,
