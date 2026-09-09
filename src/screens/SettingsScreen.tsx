@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
+  Linking,
   Pressable,
   StyleSheet,
   Text,
@@ -16,6 +17,11 @@ import { submitToWeb3Forms } from '../utils/web3forms';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
+
+// עמוד מדיניות הפרטיות מתארח כקובץ README מוצג ב-GitHub, כדי שלא יהיה
+// צורך באחסון ותחזוקה של דף אינטרנט נפרד. אפל דורשת קישור נגיש מתוך
+// האפליקציה עצמה (לא רק במטא-דאטה של החנות) לאפליקציות שמציגות פרסומות.
+const PRIVACY_POLICY_URL = 'https://github.com/yovelamirtech/bullseye-words/blob/main/PRIVACY.md';
 
 interface SettingsScreenProps {
   settings: Settings;
@@ -89,6 +95,12 @@ export default function SettingsScreen({
     if (value) toggleHaptic(true);
   }
 
+  function handleOpenPrivacyPolicy() {
+    tapHaptic();
+    playClickSound();
+    Linking.openURL(PRIVACY_POLICY_URL);
+  }
+
   return (
     <View style={styles.overlay}>
       <Pressable
@@ -147,6 +159,14 @@ export default function SettingsScreen({
             }}
           >
             <Text style={styles.rowLabel}>דיווח על באג</Text>
+            <Ionicons name="chevron-back" size={18} color={colors.textFaint} />
+          </Pressable>
+        </View>
+
+        <Text style={styles.sectionTitle}>מידע</Text>
+        <View style={styles.card}>
+          <Pressable style={styles.row} onPress={handleOpenPrivacyPolicy}>
+            <Text style={styles.rowLabel}>מדיניות פרטיות</Text>
             <Ionicons name="chevron-back" size={18} color={colors.textFaint} />
           </Pressable>
         </View>
