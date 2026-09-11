@@ -12,7 +12,8 @@ import AnimatedModal from './src/components/AnimatedModal';
 import BottomBannerAd from './src/components/BottomBannerAd';
 import { initializeAds } from './src/ads/adsInit';
 import { loadProgress, saveProgress, type Progress } from './src/state/progress';
-import { getStageCount } from './src/data/words';
+import { drawNextRandomLength } from './src/state/randomBag';
+import { getStageCount, getRandomTarget } from './src/data/words';
 import { loadSettings, saveSettings, type Settings } from './src/state/settings';
 import { setHapticEnabled } from './src/utils/haptics';
 import { setSoundEnabled } from './src/utils/sound';
@@ -20,12 +21,19 @@ import { useAppFonts } from './src/utils/fonts';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
-type Screen = 'home' | 'types' | 'stages' | 'game';
+type Screen = 'home' | 'types' | 'stages' | 'game' | 'random';
+
+interface RandomChallenge {
+  wordLength: number;
+  word: string;
+  clue: string;
+}
 
 export default function App() {
   const [progress, setProgress] = useState<Progress | null>(null);
   const [wordLength, setWordLength] = useState<number | null>(null);
   const [stageIndex, setStageIndex] = useState(0);
+  const [randomChallenge, setRandomChallenge] = useState<RandomChallenge | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [screenStack, setScreenStack] = useState<Screen[]>(['home']);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -71,6 +79,17 @@ export default function App() {
     navigateTo('game');
   }
 
+  async function refreshRandomChallenge() {
+    const length = await drawNextRandomLength();
+    const target = getRandomTarget(length);
+    setRandomChallenge({ wordLength: length, word: target?.word ?? '', clue: target?.clue ?? '' });
+  }
+
+  async function handleSelectRandomStage() {
+    await refreshRandomChallenge();
+    navigateTo('random');
+  }
+
   function handleCompleteStage() {
     if (progress === null || wordLength === null) return;
     const completed = progress.completedStages[wordLength] ?? 0;
@@ -114,6 +133,7 @@ export default function App() {
           {screen === 'home' && (
             <HomeScreen
               onSelectStagesJourney={() => navigateTo('types')}
+              onSelectRandomStage={handleSelectRandomStage}
               onOpenSettings={() => setSettingsOpen(true)}
             />
           )}
@@ -140,6 +160,19 @@ export default function App() {
               stageIndex={stageIndex}
               totalStages={getStageCount(wordLength)}
               onCompleteStage={handleCompleteStage}
+              onBackToStages={navigateBack}
+              onOpenSettings={() => setSettingsOpen(true)}
+            />
+          )}
+          {screen === 'random' && randomChallenge && (
+            <GameScreen
+              wordLength={randomChallenge.wordLength}
+              stageIndex={0}
+              totalStages={1}
+              isRandomMode
+              randomTarget={{ word: randomChallenge.word, clue: randomChallenge.clue }}
+              onNewRandomStage={refreshRandomChallenge}
+              onCompleteStage={navigateBack}
               onBackToStages={navigateBack}
               onOpenSettings={() => setSettingsOpen(true)}
             />

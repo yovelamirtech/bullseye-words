@@ -47,6 +47,22 @@ export function getStageTarget(
   return riddle ?? { word, clue: '' };
 }
 
+/**
+ * A fresh, randomly-picked target for "random stage" mode: a word drawn
+ * from the full dictionary for that length (not just the curated stage
+ * pool), so every random stage feels like a new challenge rather than a
+ * repeat of the fixed progression.
+ */
+export function getRandomTarget(wordLength: number): Riddle | undefined {
+  const words = getWordsForLevel(wordLength);
+  if (words.length === 0) return undefined;
+  const word = words[Math.floor(Math.random() * words.length)];
+  const riddle = getRiddlesForLength(wordLength).find(
+    (r) => normalizeSofit(r.word) === normalizeSofit(word)
+  );
+  return riddle ?? { word, clue: '' };
+}
+
 // Sets of sofit-normalized dictionary words, keyed by word length, built
 // once and reused for every validity check.
 const NORMALIZED_WORDS_BY_LENGTH = new Map<number, Set<string>>(
