@@ -113,14 +113,15 @@ export default function GameScreen({
     }
   }
 
-  const sortedHistory = useMemo(
-    () =>
-      [...history].sort(
-        (a, b) =>
-          b.result.bulls - a.result.bulls || b.result.hits - a.result.hits
-      ),
-    [history]
-  );
+  const [sortByScore, setSortByScore] = useState(false);
+
+  const sortedHistory = useMemo(() => {
+    if (!sortByScore) return history;
+    return [...history].sort(
+      (a, b) =>
+        b.result.bulls - a.result.bulls || b.result.hits - a.result.hits
+    );
+  }, [history, sortByScore]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -211,6 +212,26 @@ export default function GameScreen({
               <Text style={styles.errorReportLink}>בטוחים שהמילה תקנית? דווחו לנו</Text>
             </Pressable>
           </View>
+        )}
+
+        {history.length > 0 && (
+          <Pressable
+            style={styles.sortButton}
+            onPress={() => {
+              tapHaptic();
+              setSortByScore((prev) => !prev);
+            }}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Ionicons
+              name={sortByScore ? 'trophy-outline' : 'time-outline'}
+              size={14}
+              color={colors.accent}
+            />
+            <Text style={styles.sortButtonText}>
+              {sortByScore ? 'מיון: הכי הרבה בול' : 'מיון: אחרון'}
+            </Text>
+          </Pressable>
         )}
 
         <FlatList
@@ -380,5 +401,22 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.accent,
     textDecorationLine: 'underline',
+  },
+  sortButton: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    alignSelf: 'center',
+    gap: 4,
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+    borderRadius: radii.lg,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginBottom: 4,
+  },
+  sortButtonText: {
+    fontFamily: FONTS.medium,
+    color: colors.accent,
+    fontSize: 12,
   },
 });
