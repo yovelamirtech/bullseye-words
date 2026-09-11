@@ -11,11 +11,13 @@ import { maxContentWidth } from '../theme/layout';
 
 interface HomeScreenProps {
   onSelectStagesJourney: () => void;
+  onSelectRandomStage: () => void;
   onOpenSettings: () => void;
 }
 
 export default function HomeScreen({
   onSelectStagesJourney,
+  onSelectRandomStage,
   onOpenSettings,
 }: HomeScreenProps) {
   function showComingSoon() {
@@ -49,7 +51,14 @@ export default function HomeScreen({
           <Ionicons name="chevron-back" size={22} color={colors.accent} />
         </Pressable>
 
-        <Pressable style={styles.card} onPress={showComingSoon}>
+        <Pressable
+          style={styles.card}
+          onPress={() => {
+            selectionHaptic();
+            playClickSound();
+            onSelectRandomStage();
+          }}
+        >
           <View style={styles.cardIcon}>
             <Ionicons name="shuffle-outline" size={26} color={colors.accent} />
           </View>

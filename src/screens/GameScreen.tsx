@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Alert,
   FlatList,
   Pressable,
   StyleSheet,
@@ -38,6 +39,9 @@ interface GameScreenProps {
   wordLength: number;
   stageIndex: number;
   totalStages: number;
+  isRandomMode?: boolean;
+  randomTarget?: { word: string; clue: string } | null;
+  onNewRandomStage?: () => void;
   onCompleteStage: () => void;
   onBackToStages: () => void;
   onOpenSettings: () => void;
@@ -47,6 +51,9 @@ export default function GameScreen({
   wordLength,
   stageIndex,
   totalStages,
+  isRandomMode = false,
+  randomTarget = null,
+  onNewRandomStage,
   onCompleteStage,
   onBackToStages,
   onOpenSettings,
@@ -70,7 +77,7 @@ export default function GameScreen({
   }
 
   function startStage() {
-    const round = getStageTarget(wordLength, stageIndex);
+    const round = isRandomMode ? randomTarget : getStageTarget(wordLength, stageIndex);
     setTarget(round?.word ?? '');
     setClue(round?.clue ?? '');
     setClueVisible(false);
@@ -83,7 +90,27 @@ export default function GameScreen({
   useEffect(() => {
     startStage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wordLength, stageIndex]);
+  }, [wordLength, stageIndex, randomTarget]);
+
+  function confirmNewRandomStage() {
+    tapHaptic();
+    playClickSound();
+    Alert.alert(
+      'שלב חדש',
+      'לעבור לשלב אקראי חדש? ההתקדמות בשלב הנוכחי לא תישמר.',
+      [
+        { text: 'ביטול', style: 'cancel' },
+        {
+          text: 'קדימה',
+          onPress: () => {
+            selectionHaptic();
+            playClickSound();
+            onNewRandomStage?.();
+          },
+        },
+      ]
+    );
+  }
 
   const canSubmit = useMemo(
     () => input.length === wordLength && !won && target.length > 0,
@@ -139,8 +166,16 @@ export default function GameScreen({
         <Text style={styles.title}>בול פגיעה</Text>
         <View style={styles.header}>
           <Text style={styles.subtitle}>
-            שלב {stageIndex + 1} מתוך {totalStages} · {wordLength} אותיות
+            {isRandomMode
+              ? `שלב אקראי · ${wordLength} אותיות`
+              : `שלב ${stageIndex + 1} מתוך ${totalStages} · ${wordLength} אותיות`}
           </Text>
+          {isRandomMode && (
+            <Pressable style={styles.newRandomButton} onPress={confirmNewRandomStage}>
+              <Ionicons name="shuffle-outline" size={15} color={colors.accent} />
+              <Text style={styles.newRandomButtonText}>שלב חדש</Text>
+            </Pressable>
+          )}
         </View>
         {clue.length > 0 &&
           (clueVisible ? (
@@ -170,7 +205,11 @@ export default function GameScreen({
               }}
             >
               <Text style={styles.buttonText}>
-                {stageIndex + 1 < totalStages ? 'לשלב הבא' : 'חזרה למסלול'}
+                {isRandomMode
+                  ? 'חזרה לתפריט'
+                  : stageIndex + 1 < totalStages
+                    ? 'לשלב הבא'
+                    : 'חזרה למסלול'}
               </Text>
             </Pressable>
           </View>
@@ -325,6 +364,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     color: colors.textMuted,
+  },
+  newRandomButton: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    gap: 4,
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+    borderRadius: radii.lg,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+  },
+  newRandomButtonText: {
+    fontFamily: FONTS.medium,
+    color: colors.accent,
+    fontSize: 13,
   },
   clue: {
     fontFamily: FONTS.regular,
