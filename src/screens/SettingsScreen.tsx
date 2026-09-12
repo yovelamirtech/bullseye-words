@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   Animated,
   Linking,
@@ -35,6 +35,21 @@ interface SettingsScreenProps {
 interface ToggleProps {
   value: boolean;
   onValueChange: (value: boolean) => void;
+}
+
+interface SettingsSectionProps {
+  title: string;
+  children: ReactNode;
+}
+
+/** כותרת מקטע + כרטיס עוטף, חוזר על עצמו לכל מקטע הגדרות (סאונד, משוב, עזרה, מידע). */
+function SettingsSection({ title, children }: SettingsSectionProps) {
+  return (
+    <>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      <View style={styles.card}>{children}</View>
+    </>
+  );
 }
 
 const TOGGLE_TRAVEL = 20;
@@ -124,16 +139,14 @@ export default function SettingsScreen({
           <Text style={styles.title}>הגדרות</Text>
         </View>
 
-        <Text style={styles.sectionTitle}>סאונד</Text>
-        <View style={styles.card}>
+        <SettingsSection title="סאונד">
           <View style={styles.row}>
             <Text style={styles.rowLabel}>אפקטים קוליים</Text>
             <Toggle value={settings.soundEnabled} onValueChange={handleToggleSound} />
           </View>
-        </View>
+        </SettingsSection>
 
-        <Text style={styles.sectionTitle}>משוב</Text>
-        <View style={styles.card}>
+        <SettingsSection title="משוב">
           <View style={styles.row}>
             <Text style={styles.rowLabel}>רטט (משוב הפטי)</Text>
             <Toggle
@@ -144,10 +157,9 @@ export default function SettingsScreen({
               }}
             />
           </View>
-        </View>
+        </SettingsSection>
 
-        <Text style={styles.sectionTitle}>עזרה</Text>
-        <View style={styles.card}>
+        <SettingsSection title="עזרה">
           <Pressable
             style={styles.row}
             onPress={() => {
@@ -158,15 +170,14 @@ export default function SettingsScreen({
             <Text style={styles.rowLabel}>דיווח על באג</Text>
             <Ionicons name="chevron-back" size={18} color={colors.textFaint} />
           </Pressable>
-        </View>
+        </SettingsSection>
 
-        <Text style={styles.sectionTitle}>מידע</Text>
-        <View style={styles.card}>
+        <SettingsSection title="מידע">
           <Pressable style={styles.row} onPress={handleOpenPrivacyPolicy}>
             <Text style={styles.rowLabel}>מדיניות פרטיות</Text>
             <Ionicons name="chevron-back" size={18} color={colors.textFaint} />
           </Pressable>
-        </View>
+        </SettingsSection>
       </Dialog>
 
       <ReportModal
