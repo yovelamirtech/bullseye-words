@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -58,8 +58,11 @@ export default function GameScreen({
   onBackToStages,
   onOpenSettings,
 }: GameScreenProps) {
-  const [target, setTarget] = useState('');
-  const [clue, setClue] = useState('');
+  // App.tsx מרנדר מחדש GameScreen עם key שונה בכל שלב חדש, כך שה-state
+  // הבא מאותחל ישירות מה-props ואין הבזק של הסיבוב הקודם.
+  const round = isRandomMode ? randomTarget : getStageTarget(wordLength, stageIndex);
+  const [target] = useState(round?.word ?? '');
+  const [clue] = useState(round?.clue ?? '');
   const [clueVisible, setClueVisible] = useState(false);
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<GuessEntry[]>([]);
@@ -75,22 +78,6 @@ export default function GameScreen({
     setReportedWord(word);
     setReportVisible(true);
   }
-
-  function startStage() {
-    const round = isRandomMode ? randomTarget : getStageTarget(wordLength, stageIndex);
-    setTarget(round?.word ?? '');
-    setClue(round?.clue ?? '');
-    setClueVisible(false);
-    setHistory([]);
-    setInput('');
-    setWon(false);
-    setError('');
-  }
-
-  useEffect(() => {
-    startStage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wordLength, stageIndex, randomTarget]);
 
   function confirmNewRandomStage() {
     tapHaptic();
