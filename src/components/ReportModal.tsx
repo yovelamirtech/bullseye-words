@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AnimatedModal from './AnimatedModal';
-import { successHaptic, tapHaptic } from '../utils/haptics';
-import { playClickSound, playCorrectSound } from '../utils/sound';
+import { playClickSound } from '../utils/sound';
+import { successFeedback, tapFeedback } from '../utils/pressFeedback';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
@@ -91,14 +91,12 @@ export default function ReportModal({
       return;
     }
 
-    successHaptic();
-    playCorrectSound();
+    successFeedback();
     setSubmitted(true);
   }
 
   function handleClose() {
-    tapHaptic();
-    playClickSound();
+    tapFeedback();
     onClose();
   }
 

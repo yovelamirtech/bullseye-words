@@ -13,6 +13,7 @@ import type { Settings } from '../state/settings';
 import ReportModal from '../components/ReportModal';
 import { tapHaptic, toggleHaptic } from '../utils/haptics';
 import { playClickSound } from '../utils/sound';
+import { tapFeedback } from '../utils/pressFeedback';
 import { submitToWeb3Forms } from '../utils/web3forms';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
@@ -96,8 +97,7 @@ export default function SettingsScreen({
   }
 
   function handleOpenPrivacyPolicy() {
-    tapHaptic();
-    playClickSound();
+    tapFeedback();
     Linking.openURL(PRIVACY_POLICY_URL);
   }
 
@@ -115,8 +115,7 @@ export default function SettingsScreen({
         <View style={styles.header}>
           <Pressable
             onPress={() => {
-              tapHaptic();
-              playClickSound();
+              tapFeedback();
               onBack();
             }}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
@@ -153,8 +152,7 @@ export default function SettingsScreen({
           <Pressable
             style={styles.row}
             onPress={() => {
-              tapHaptic();
-              playClickSound();
+              tapFeedback();
               setBugReportVisible(true);
             }}
           >

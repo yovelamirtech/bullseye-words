@@ -8,7 +8,7 @@ export const LEVELS = Object.keys(WORDS_BY_LENGTH)
   .map(Number)
   .sort((a, b) => a - b);
 
-export function getWordsForLevel(wordLength: number): string[] {
+export function getWordsForLength(wordLength: number): string[] {
   return WORDS_BY_LENGTH[wordLength] ?? [];
 }
 
@@ -24,7 +24,7 @@ export const STAGES_PER_LENGTH = 20;
 function getStageWordPool(wordLength: number): string[] {
   const riddleWords = getRiddlesForLength(wordLength).map((r) => r.word);
   const riddleSet = new Set(riddleWords.map(normalizeSofit));
-  const otherWords = getWordsForLevel(wordLength).filter(
+  const otherWords = getWordsForLength(wordLength).filter(
     (w) => !riddleSet.has(normalizeSofit(w))
   );
   return [...riddleWords, ...otherWords].slice(0, STAGES_PER_LENGTH);

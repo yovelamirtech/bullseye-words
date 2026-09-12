@@ -2,8 +2,7 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { SettingsButton } from '../components/TopBar';
-import { selectionHaptic } from '../utils/haptics';
-import { playClickSound } from '../utils/sound';
+import { selectionFeedback } from '../utils/pressFeedback';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
@@ -21,8 +20,7 @@ export default function HomeScreen({
   onOpenSettings,
 }: HomeScreenProps) {
   function showComingSoon() {
-    selectionHaptic();
-    playClickSound();
+    selectionFeedback();
     Alert.alert('בקרוב', 'האפשרות הזו עוד לא זמינה.');
   }
 
@@ -36,8 +34,7 @@ export default function HomeScreen({
         <Pressable
           style={styles.card}
           onPress={() => {
-            selectionHaptic();
-            playClickSound();
+            selectionFeedback();
             onSelectStagesJourney();
           }}
         >
@@ -54,8 +51,7 @@ export default function HomeScreen({
         <Pressable
           style={styles.card}
           onPress={() => {
-            selectionHaptic();
-            playClickSound();
+            selectionFeedback();
             onSelectRandomStage();
           }}
         >

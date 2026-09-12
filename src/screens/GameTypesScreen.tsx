@@ -3,8 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { WORD_LENGTHS } from '../data/riddles';
 import { getStageCount } from '../data/words';
-import { selectionHaptic } from '../utils/haptics';
-import { playClickSound } from '../utils/sound';
+import { selectionFeedback } from '../utils/pressFeedback';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
@@ -51,8 +50,7 @@ export default function GameTypesScreen({
               key={length}
               style={styles.card}
               onPress={() => {
-                selectionHaptic();
-                playClickSound();
+                selectionFeedback();
                 onSelect(length);
               }}
             >

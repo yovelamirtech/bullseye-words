@@ -2,8 +2,7 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { getStageCount } from '../data/words';
-import { selectionHaptic } from '../utils/haptics';
-import { playClickSound } from '../utils/sound';
+import { selectionFeedback } from '../utils/pressFeedback';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
@@ -62,8 +61,7 @@ export default function StagesScreen({
                 isLocked && styles.cardLocked,
               ]}
               onPress={() => {
-                selectionHaptic();
-                playClickSound();
+                selectionFeedback();
                 onSelectStage(stageIndex);
               }}
             >
