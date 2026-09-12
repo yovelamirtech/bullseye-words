@@ -54,9 +54,3 @@ export const WORD_LENGTHS = Object.keys(RIDDLES_BY_LENGTH)
 export function getRiddlesForLength(wordLength: number): Riddle[] {
   return RIDDLES_BY_LENGTH[wordLength] ?? [];
 }
-
-export function pickRandomRiddle(wordLength: number): Riddle | undefined {
-  const riddles = getRiddlesForLength(wordLength);
-  if (riddles.length === 0) return undefined;
-  return riddles[Math.floor(Math.random() * riddles.length)];
-}
