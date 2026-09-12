@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, type ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { tapFeedback } from '../utils/pressFeedback';
 import { colors } from '../theme/colors';
@@ -12,6 +12,21 @@ interface TopBarButtonProps {
 // הדיווח במסך המשחק) יושבים באותו גובה בדיוק, כדי שהמעבר בין מסכים לא
 // "יקפיץ" את הכפתורים למקום אחר.
 export const TOP_BAR_OFFSET = 58;
+
+/** עיצוב הבסיס המשותף לכל כפתור עגול צף בשורת ה-top bar (הגדרות, חזרה, דיווח). */
+export const topBarButtonStyle: ViewStyle = {
+  position: 'absolute',
+  top: TOP_BAR_OFFSET,
+  width: 40,
+  height: 40,
+  borderRadius: radii.xl,
+  backgroundColor: colors.card,
+  borderWidth: 1,
+  borderColor: colors.accentBorder,
+  alignItems: 'center',
+  justifyContent: 'center',
+  zIndex: 1,
+};
 
 export function SettingsButton({ onPress }: TopBarButtonProps) {
   return (
@@ -46,19 +61,7 @@ export function BackButton({ onPress }: TopBarButtonProps) {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    position: 'absolute',
-    top: TOP_BAR_OFFSET,
-    width: 40,
-    height: 40,
-    borderRadius: radii.xl,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.accentBorder,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1,
-  },
+  button: topBarButtonStyle,
   settingsButton: {
     left: 20,
   },

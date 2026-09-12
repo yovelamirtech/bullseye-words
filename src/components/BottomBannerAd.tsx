@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import type { BannerAd as BannerAdType, BannerAdSize as BannerAdSizeType } from 'react-native-google-mobile-ads';
 import { BANNER_AD_UNIT_ID } from '../ads/adUnitIds';
 import { isExpoGo } from '../ads/isExpoGo';
+import { colors } from '../theme/colors';
 
 // טעינה דינמית של react-native-google-mobile-ads: ב-Expo Go המודול הנייטיבי
 // לא קיים בכלל, ואפילו ה-import הסטטי שלו יקרוס עם
@@ -34,6 +35,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     alignItems: 'center',
-    backgroundColor: '#FDF3E7',
+    backgroundColor: colors.background,
   },
 });

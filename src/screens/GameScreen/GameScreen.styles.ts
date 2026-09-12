@@ -3,7 +3,7 @@ import { FONTS } from '../../utils/fonts';
 import { colors } from '../../theme/colors';
 import { radii } from '../../theme/radii';
 import { maxContentWidth } from '../../theme/layout';
-import { TOP_BAR_OFFSET } from '../../components/TopBar';
+import { topBarButtonStyle } from '../../components/TopBar';
 
 export const styles = StyleSheet.create({
   flex: {
@@ -13,18 +13,8 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   reportButton: {
-    position: 'absolute',
-    top: TOP_BAR_OFFSET,
+    ...topBarButtonStyle,
     left: 68,
-    width: 40,
-    height: 40,
-    borderRadius: radii.xl,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.accentBorder,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1,
   },
   title: {
     fontFamily: FONTS.display,
