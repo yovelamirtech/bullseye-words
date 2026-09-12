@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { WORD_LENGTHS } from '../data/riddles';
+import { STORAGE_KEY_PREFIX } from './storageKeys';
 
-const STORAGE_KEY = 'bullseye-words:progress';
+const STORAGE_KEY = `${STORAGE_KEY_PREFIX}:progress`;
 
 export interface Progress {
   wordLength: number;

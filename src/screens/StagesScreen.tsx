@@ -1,5 +1,4 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { getStageCount } from '../data/words';
 import { selectionFeedback } from '../utils/pressFeedback';
@@ -9,6 +8,7 @@ import { radii } from '../theme/radii';
 import { maxContentWidth } from '../theme/layout';
 import ProgressMeter from '../components/ProgressMeter';
 import { BackButton, SettingsButton } from '../components/TopBar';
+import ScreenContainer from '../components/ScreenContainer';
 
 interface StagesScreenProps {
   wordLength: number;
@@ -31,7 +31,7 @@ export default function StagesScreen({
     totalStages > 0 ? Math.round((completedCount / totalStages) * 100) : 0;
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <ScreenContainer style={styles.safe}>
       <SettingsButton onPress={onOpenSettings} />
       <BackButton onPress={onBack} />
       <View style={styles.header}>
@@ -89,14 +89,12 @@ export default function StagesScreen({
           );
         }}
       />
-    </SafeAreaView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   safe: {
-    flex: 1,
-    backgroundColor: colors.background,
     paddingTop: 64,
   },
   header: {

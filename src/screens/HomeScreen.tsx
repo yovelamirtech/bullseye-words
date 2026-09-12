@@ -1,12 +1,11 @@
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { SettingsButton } from '../components/TopBar';
+import ScreenContainer, { ScreenContent } from '../components/ScreenContainer';
 import { selectionFeedback } from '../utils/pressFeedback';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
-import { maxContentWidth } from '../theme/layout';
 
 interface HomeScreenProps {
   onSelectStagesJourney: () => void;
@@ -25,12 +24,12 @@ export default function HomeScreen({
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <ScreenContainer style={styles.safe}>
       <SettingsButton onPress={onOpenSettings} />
       <Text style={styles.title}>בול פגיעה</Text>
       <Text style={styles.subtitle}>איך תרצו לשחק?</Text>
 
-      <View style={styles.list}>
+      <ScreenContent style={styles.list}>
         <Pressable
           style={styles.card}
           onPress={() => {
@@ -75,15 +74,13 @@ export default function HomeScreen({
           </View>
           <Ionicons name="chevron-back" size={22} color={colors.accent} />
         </Pressable>
-      </View>
-    </SafeAreaView>
+      </ScreenContent>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   safe: {
-    flex: 1,
-    backgroundColor: colors.background,
     alignItems: 'center',
     paddingTop: 64,
   },
@@ -102,9 +99,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   list: {
-    width: '100%',
-    maxWidth: maxContentWidth,
-    alignSelf: 'center',
     paddingHorizontal: 20,
     gap: 14,
   },
