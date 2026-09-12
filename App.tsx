@@ -156,6 +156,7 @@ export default function App() {
           )}
           {screen === 'game' && (
             <GameScreen
+              key={`stage-${wordLength}-${stageIndex}`}
               wordLength={wordLength}
               stageIndex={stageIndex}
               totalStages={getStageCount(wordLength)}
@@ -166,6 +167,7 @@ export default function App() {
           )}
           {screen === 'random' && randomChallenge && (
             <GameScreen
+              key={`random-${randomChallenge.word}`}
               wordLength={randomChallenge.wordLength}
               stageIndex={0}
               totalStages={1}
