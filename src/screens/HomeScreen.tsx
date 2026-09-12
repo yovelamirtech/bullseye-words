@@ -13,13 +13,41 @@ interface HomeScreenProps {
   onOpenSettings: () => void;
 }
 
+interface MenuCardProps {
+  icon: keyof typeof Ionicons.glyphMap;
+  title: string;
+  subtitle: string;
+  onPress: () => void;
+}
+
+/** כרטיס אפשרות בתפריט הראשי: אייקון, כותרת+תת-כותרת, וחץ. */
+function MenuCard({ icon, title, subtitle, onPress }: MenuCardProps) {
+  return (
+    <Pressable
+      style={styles.card}
+      onPress={() => {
+        selectionFeedback();
+        onPress();
+      }}
+    >
+      <View style={styles.cardIcon}>
+        <Ionicons name={icon} size={26} color={colors.accent} />
+      </View>
+      <View style={styles.cardText}>
+        <Text style={styles.cardTitle}>{title}</Text>
+        <Text style={styles.cardSubtitle}>{subtitle}</Text>
+      </View>
+      <Ionicons name="chevron-back" size={22} color={colors.accent} />
+    </Pressable>
+  );
+}
+
 export default function HomeScreen({
   onSelectStagesJourney,
   onSelectRandomStage,
   onOpenSettings,
 }: HomeScreenProps) {
   function showComingSoon() {
-    selectionFeedback();
     Alert.alert('בקרוב', 'האפשרות הזו עוד לא זמינה.');
   }
 
@@ -30,50 +58,24 @@ export default function HomeScreen({
       <Text style={styles.subtitle}>איך תרצו לשחק?</Text>
 
       <ScreenContent style={styles.list}>
-        <Pressable
-          style={styles.card}
-          onPress={() => {
-            selectionFeedback();
-            onSelectStagesJourney();
-          }}
-        >
-          <View style={styles.cardIcon}>
-            <Ionicons name="map-outline" size={26} color={colors.accent} />
-          </View>
-          <View style={styles.cardText}>
-            <Text style={styles.cardTitle}>שלבים</Text>
-            <Text style={styles.cardSubtitle}>התקדמו שלב אחרי שלב</Text>
-          </View>
-          <Ionicons name="chevron-back" size={22} color={colors.accent} />
-        </Pressable>
-
-        <Pressable
-          style={styles.card}
-          onPress={() => {
-            selectionFeedback();
-            onSelectRandomStage();
-          }}
-        >
-          <View style={styles.cardIcon}>
-            <Ionicons name="shuffle-outline" size={26} color={colors.accent} />
-          </View>
-          <View style={styles.cardText}>
-            <Text style={styles.cardTitle}>שלב אקראי</Text>
-            <Text style={styles.cardSubtitle}>מילה אקראית לניחוש</Text>
-          </View>
-          <Ionicons name="chevron-back" size={22} color={colors.accent} />
-        </Pressable>
-
-        <Pressable style={styles.card} onPress={showComingSoon}>
-          <View style={styles.cardIcon}>
-            <Ionicons name="calendar-outline" size={26} color={colors.accent} />
-          </View>
-          <View style={styles.cardText}>
-            <Text style={styles.cardTitle}>אתגר יומי</Text>
-            <Text style={styles.cardSubtitle}>אתגר חדש בכל יום</Text>
-          </View>
-          <Ionicons name="chevron-back" size={22} color={colors.accent} />
-        </Pressable>
+        <MenuCard
+          icon="map-outline"
+          title="שלבים"
+          subtitle="התקדמו שלב אחרי שלב"
+          onPress={onSelectStagesJourney}
+        />
+        <MenuCard
+          icon="shuffle-outline"
+          title="שלב אקראי"
+          subtitle="מילה אקראית לניחוש"
+          onPress={onSelectRandomStage}
+        />
+        <MenuCard
+          icon="calendar-outline"
+          title="אתגר יומי"
+          subtitle="אתגר חדש בכל יום"
+          onPress={showComingSoon}
+        />
       </ScreenContent>
     </ScreenContainer>
   );
