@@ -11,8 +11,10 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import type { Settings } from '../state/settings';
 import ReportModal from '../components/ReportModal';
+import Dialog from '../components/Dialog';
 import { tapHaptic, toggleHaptic } from '../utils/haptics';
 import { playClickSound } from '../utils/sound';
+import { tapFeedback } from '../utils/pressFeedback';
 import { submitToWeb3Forms } from '../utils/web3forms';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
@@ -96,27 +98,23 @@ export default function SettingsScreen({
   }
 
   function handleOpenPrivacyPolicy() {
-    tapHaptic();
-    playClickSound();
+    tapFeedback();
     Linking.openURL(PRIVACY_POLICY_URL);
   }
 
+  function handleDismiss() {
+    tapHaptic();
+    playClickSound();
+    onBack();
+  }
+
   return (
-    <View style={styles.overlay}>
-      <Pressable
-        style={StyleSheet.absoluteFill}
-        onPress={() => {
-          tapHaptic();
-          playClickSound();
-          onBack();
-        }}
-      />
-      <View style={styles.dialog}>
+    <>
+      <Dialog onDismiss={handleDismiss} cardStyle={styles.dialog}>
         <View style={styles.header}>
           <Pressable
             onPress={() => {
-              tapHaptic();
-              playClickSound();
+              tapFeedback();
               onBack();
             }}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
@@ -153,8 +151,7 @@ export default function SettingsScreen({
           <Pressable
             style={styles.row}
             onPress={() => {
-              tapHaptic();
-              playClickSound();
+              tapFeedback();
               setBugReportVisible(true);
             }}
           >
@@ -170,7 +167,7 @@ export default function SettingsScreen({
             <Ionicons name="chevron-back" size={18} color={colors.textFaint} />
           </Pressable>
         </View>
-      </View>
+      </Dialog>
 
       <ReportModal
         visible={bugReportVisible}
@@ -198,22 +195,12 @@ export default function SettingsScreen({
           })
         }
       />
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-  },
   dialog: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: colors.background,
-    borderRadius: radii.xl,
     paddingVertical: 16,
     paddingBottom: 20,
   },

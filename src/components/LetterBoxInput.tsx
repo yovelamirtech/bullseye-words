@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, type ForwardedRef } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
@@ -12,19 +12,20 @@ interface LetterBoxInputProps {
   onSubmit: () => void;
 }
 
+// ref יכול להיות פונקציה (callback ref) או אובייקט (RefObject); רק במקרה
+// השני יש לנו גישה ל-current כדי למקד את השדה ידנית.
+function focusInput(ref: ForwardedRef<TextInput>): void {
+  if (typeof ref !== 'function' && ref?.current) {
+    ref.current.focus();
+  }
+}
+
 const LetterBoxInput = forwardRef<TextInput, LetterBoxInputProps>(
   ({ value, wordLength, onChangeText, onSubmit }, ref) => {
     const cells = Array.from({ length: wordLength }, (_, index) => value[index] ?? '');
 
     return (
-      <Pressable
-        style={styles.wrapper}
-        onPress={() => {
-          if (typeof ref !== 'function' && ref?.current) {
-            ref.current.focus();
-          }
-        }}
-      >
+      <Pressable style={styles.wrapper} onPress={() => focusInput(ref)}>
         <View style={styles.boxes}>
           {cells.map((letter, index) => (
             <View

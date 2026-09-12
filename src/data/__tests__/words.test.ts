@@ -1,10 +1,11 @@
 import {
   isValidWord,
-  getWordsForLevel,
+  getWordsForLength,
   LEVELS,
   getStageCount,
   getStageTarget,
   STAGES_PER_LENGTH,
+  findRiddleOrEmpty,
 } from '../words';
 import { getRiddlesForLength, WORD_LENGTHS } from '../riddles';
 import { normalizeSofit } from '../../logic/hebrew';
@@ -25,7 +26,7 @@ describe('isValidWord', () => {
   it('accepts a word spelled with the "wrong" sofit form', () => {
     // 'אבא' is a real word; swapping the trailing regular letter for a
     // final-form letter should still validate against the dictionary.
-    const words = getWordsForLevel(4);
+    const words = getWordsForLength(4);
     const withFinalLetter = words.find((w) => w.endsWith('ם'));
     expect(withFinalLetter).toBeDefined();
     const regularForm = withFinalLetter!.slice(0, -1) + 'מ';
@@ -36,7 +37,7 @@ describe('isValidWord', () => {
 describe('word bank coverage', () => {
   it('has a non-trivial pool of words for every level', () => {
     for (const length of LEVELS) {
-      expect(getWordsForLevel(length).length).toBeGreaterThan(0);
+      expect(getWordsForLength(length).length).toBeGreaterThan(0);
     }
   });
 });
@@ -83,6 +84,34 @@ describe('stage functions', () => {
         normalizeSofit(getStageTarget(length, i)!.word)
       );
       expect(new Set(words).size).toBe(words.length);
+    }
+  });
+});
+
+describe('findRiddleOrEmpty', () => {
+  it('returns the curated riddle (with clue) for a word that has one', () => {
+    const length = WORD_LENGTHS[0];
+    const riddle = getRiddlesForLength(length)[0];
+    const result = findRiddleOrEmpty(length, riddle.word);
+    expect(normalizeSofit(result.word)).toBe(normalizeSofit(riddle.word));
+    expect(result.clue).toBe(riddle.clue);
+  });
+
+  it('matches sofit-insensitively', () => {
+    const length = WORD_LENGTHS[0];
+    const riddle = getRiddlesForLength(length)[0];
+    const alteredWord = normalizeSofit(riddle.word);
+    const result = findRiddleOrEmpty(length, alteredWord);
+    expect(result.clue).toBe(riddle.clue);
+  });
+
+  it('falls back to a clue-less riddle for a word with no curated match', () => {
+    const length = WORD_LENGTHS[0];
+    const word = getWordsForLength(length).find(
+      (w) => !getRiddlesForLength(length).some((r) => normalizeSofit(r.word) === normalizeSofit(w))
+    );
+    if (word) {
+      expect(findRiddleOrEmpty(length, word)).toEqual({ word, clue: '' });
     }
   });
 });

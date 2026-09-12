@@ -8,7 +8,7 @@ export const LEVELS = Object.keys(WORDS_BY_LENGTH)
   .map(Number)
   .sort((a, b) => a - b);
 
-export function getWordsForLevel(wordLength: number): string[] {
+export function getWordsForLength(wordLength: number): string[] {
   return WORDS_BY_LENGTH[wordLength] ?? [];
 }
 
@@ -24,7 +24,7 @@ export const STAGES_PER_LENGTH = 20;
 function getStageWordPool(wordLength: number): string[] {
   const riddleWords = getRiddlesForLength(wordLength).map((r) => r.word);
   const riddleSet = new Set(riddleWords.map(normalizeSofit));
-  const otherWords = getWordsForLevel(wordLength).filter(
+  const otherWords = getWordsForLength(wordLength).filter(
     (w) => !riddleSet.has(normalizeSofit(w))
   );
   return [...riddleWords, ...otherWords].slice(0, STAGES_PER_LENGTH);
@@ -34,6 +34,18 @@ export function getStageCount(wordLength: number): number {
   return getStageWordPool(wordLength).length;
 }
 
+/**
+ * Looks up the curated riddle (word + clue) matching `word` for a given
+ * length, sofit-insensitively; falls back to a clue-less riddle if none of
+ * the curated riddles match.
+ */
+export function findRiddleOrEmpty(wordLength: number, word: string): Riddle {
+  const riddle = getRiddlesForLength(wordLength).find(
+    (r) => normalizeSofit(r.word) === normalizeSofit(word)
+  );
+  return riddle ?? { word, clue: '' };
+}
+
 /** The target word (with clue, if one is curated) for a specific stage. */
 export function getStageTarget(
   wordLength: number,
@@ -41,10 +53,7 @@ export function getStageTarget(
 ): Riddle | undefined {
   const word = getStageWordPool(wordLength)[stageIndex];
   if (!word) return undefined;
-  const riddle = getRiddlesForLength(wordLength).find(
-    (r) => normalizeSofit(r.word) === normalizeSofit(word)
-  );
-  return riddle ?? { word, clue: '' };
+  return findRiddleOrEmpty(wordLength, word);
 }
 
 /**
@@ -54,13 +63,10 @@ export function getStageTarget(
  * repeat of the fixed progression.
  */
 export function getRandomTarget(wordLength: number): Riddle | undefined {
-  const words = getWordsForLevel(wordLength);
+  const words = getWordsForLength(wordLength);
   if (words.length === 0) return undefined;
   const word = words[Math.floor(Math.random() * words.length)];
-  const riddle = getRiddlesForLength(wordLength).find(
-    (r) => normalizeSofit(r.word) === normalizeSofit(word)
-  );
-  return riddle ?? { word, clue: '' };
+  return findRiddleOrEmpty(wordLength, word);
 }
 
 // Sets of sofit-normalized dictionary words, keyed by word length, built

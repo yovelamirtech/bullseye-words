@@ -1,16 +1,15 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { WORD_LENGTHS } from '../data/riddles';
 import { getStageCount } from '../data/words';
-import { selectionHaptic } from '../utils/haptics';
-import { playClickSound } from '../utils/sound';
+import { selectionFeedback } from '../utils/pressFeedback';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
 import { maxContentWidth } from '../theme/layout';
 import ProgressMeter from '../components/ProgressMeter';
 import { BackButton, SettingsButton } from '../components/TopBar';
+import ScreenContainer from '../components/ScreenContainer';
 
 const HEBREW_ALPHABET = [
   'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י',
@@ -31,7 +30,7 @@ export default function GameTypesScreen({
   onBack,
 }: GameTypesScreenProps) {
   return (
-    <SafeAreaView style={styles.safe}>
+    <ScreenContainer style={styles.safe}>
       <SettingsButton onPress={onOpenSettings} />
       <BackButton onPress={onBack} />
       <Text style={styles.subtitle}>בחרו כמה אותיות</Text>
@@ -51,8 +50,7 @@ export default function GameTypesScreen({
               key={length}
               style={styles.card}
               onPress={() => {
-                selectionHaptic();
-                playClickSound();
+                selectionFeedback();
                 onSelect(length);
               }}
             >
@@ -77,14 +75,12 @@ export default function GameTypesScreen({
           );
         })}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   safe: {
-    flex: 1,
-    backgroundColor: colors.background,
     alignItems: 'center',
     paddingTop: 64,
   },

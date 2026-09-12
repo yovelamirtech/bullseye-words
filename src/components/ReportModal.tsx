@@ -1,17 +1,10 @@
 import { useEffect, useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AnimatedModal from './AnimatedModal';
-import { successHaptic, tapHaptic } from '../utils/haptics';
-import { playClickSound, playCorrectSound } from '../utils/sound';
+import Dialog from './Dialog';
+import { playClickSound } from '../utils/sound';
+import { successFeedback, tapFeedback } from '../utils/pressFeedback';
 import { FONTS } from '../utils/fonts';
 import { colors } from '../theme/colors';
 import { radii } from '../theme/radii';
@@ -91,109 +84,87 @@ export default function ReportModal({
       return;
     }
 
-    successHaptic();
-    playCorrectSound();
+    successFeedback();
     setSubmitted(true);
   }
 
   function handleClose() {
-    tapHaptic();
-    playClickSound();
+    tapFeedback();
     onClose();
   }
 
   return (
     <AnimatedModal visible={visible} onRequestClose={handleClose}>
-      <View style={styles.overlay}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={handleClose} />
-        <KeyboardAvoidingView
-          style={styles.cardWrapper}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-          <View style={styles.card}>
-            {submitted ? (
-              <>
-                <Ionicons
-                  name="checkmark-circle-outline"
-                  size={40}
-                  color={colors.accent}
-                  style={styles.successIcon}
+      <Dialog onDismiss={handleClose} cardStyle={styles.card} avoidKeyboard>
+        {submitted ? (
+          <>
+            <Ionicons
+              name="checkmark-circle-outline"
+              size={40}
+              color={colors.accent}
+              style={styles.successIcon}
+            />
+            <Text style={styles.title}>{successTitle}</Text>
+            <Text style={styles.message}>{successMessage}</Text>
+            <Pressable
+              style={[styles.button, styles.submitButton, styles.singleButton]}
+              onPress={handleClose}
+            >
+              <Text style={styles.submitText}>סגירה</Text>
+            </Pressable>
+          </>
+        ) : (
+          <>
+            <Text style={styles.title}>{title}</Text>
+            {intro ? <Text style={styles.message}>{intro}</Text> : null}
+
+            {fields.map((field) => (
+              <View key={field.key}>
+                <Text style={styles.fieldLabel}>{field.label}</Text>
+                <TextInput
+                  style={[styles.input, field.multiline && styles.inputMultiline]}
+                  value={values[field.key] ?? ''}
+                  onChangeText={(text) =>
+                    setValues((prev) => ({ ...prev, [field.key]: text }))
+                  }
+                  placeholder={field.placeholder}
+                  placeholderTextColor={colors.placeholder}
+                  multiline={field.multiline}
                 />
-                <Text style={styles.title}>{successTitle}</Text>
-                <Text style={styles.message}>{successMessage}</Text>
-                <Pressable
-                  style={[styles.button, styles.submitButton, styles.singleButton]}
-                  onPress={handleClose}
-                >
-                  <Text style={styles.submitText}>סגירה</Text>
-                </Pressable>
-              </>
-            ) : (
-              <>
-                <Text style={styles.title}>{title}</Text>
-                {intro ? <Text style={styles.message}>{intro}</Text> : null}
+              </View>
+            ))}
 
-                {fields.map((field) => (
-                  <View key={field.key}>
-                    <Text style={styles.fieldLabel}>{field.label}</Text>
-                    <TextInput
-                      style={[styles.input, field.multiline && styles.inputMultiline]}
-                      value={values[field.key] ?? ''}
-                      onChangeText={(text) =>
-                        setValues((prev) => ({ ...prev, [field.key]: text }))
-                      }
-                      placeholder={field.placeholder}
-                      placeholderTextColor={colors.placeholder}
-                      multiline={field.multiline}
-                    />
-                  </View>
-                ))}
+            {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
-                {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-
-                <View style={styles.buttons}>
-                  <Pressable
-                    style={[
-                      styles.button,
-                      styles.submitButton,
-                      (!canSubmit || sending) && styles.buttonDisabled,
-                    ]}
-                    onPress={handleSubmit}
-                    disabled={!canSubmit || sending}
-                  >
-                    <Text style={styles.submitText}>{sending ? 'שולח...' : 'שליחה'}</Text>
-                  </Pressable>
-                  <Pressable
-                    style={[styles.button, styles.cancelButton]}
-                    onPress={handleClose}
-                    disabled={sending}
-                  >
-                    <Text style={styles.cancelText}>ביטול</Text>
-                  </Pressable>
-                </View>
-              </>
-            )}
-          </View>
-        </KeyboardAvoidingView>
-      </View>
+            <View style={styles.buttons}>
+              <Pressable
+                style={[
+                  styles.button,
+                  styles.submitButton,
+                  (!canSubmit || sending) && styles.buttonDisabled,
+                ]}
+                onPress={handleSubmit}
+                disabled={!canSubmit || sending}
+              >
+                <Text style={styles.submitText}>{sending ? 'שולח...' : 'שליחה'}</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.cancelButton]}
+                onPress={handleClose}
+                disabled={sending}
+              >
+                <Text style={styles.cancelText}>ביטול</Text>
+              </Pressable>
+            </View>
+          </>
+        )}
+      </Dialog>
     </AnimatedModal>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-  },
-  cardWrapper: {
-    width: '100%',
-    maxWidth: 360,
-  },
   card: {
-    backgroundColor: colors.background,
-    borderRadius: radii.xl,
     padding: 20,
   },
   successIcon: {

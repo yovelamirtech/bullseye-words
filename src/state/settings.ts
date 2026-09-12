@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_KEY_PREFIX } from './storageKeys';
 
-const STORAGE_KEY = 'bullseye-words:settings';
+const STORAGE_KEY = `${STORAGE_KEY_PREFIX}:settings`;
 
 export interface Settings {
   soundEnabled: boolean;
